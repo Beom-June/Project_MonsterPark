@@ -14,45 +14,68 @@ namespace Player
         public float alphaColor = 0.3f;
         public Color color;
 
+        private Animator anim;
+        private float time;
+
         Image img;
         GameObject imgObj;
 
         private MonsterController monCtr;
         private MonsterController originMonCtr;
 
+        private void Awake()
+        {
+            anim = GetComponent<Animator>();
+        }
         private void Update()
         {
             // 부채꼴 모양의 감지
             Collider[] targets = Physics.OverlapSphere(transform.position, detectionRange, targetLayer);
             bool isTargetDetected = targets.Length > 0; // 타겟이 감지되었는지 여부 확인
 
-            // 원래의 색으로 복원
             if (!isTargetDetected && monCtr != null)
             {
+                if (time >= 0)
+                {
+                    time -= Time.deltaTime;
+                }
+                anim.SetLayerWeight(1, time);
+
                 monCtr.SetIsPlayerChase(false);
-                monCtr = null;
+     
                 Debug.Log("원래 색 복원");
             }
 
-            float closestDistance = Mathf.Infinity;
-            foreach (Collider target in targets)
+            if(isTargetDetected)
             {
-                Vector3 directionToTarget = target.transform.position - transform.position;
-                float angle = Vector3.Angle(transform.forward, directionToTarget);
-
-                if (angle <= detectionAngle * 0.5f)
+                float closestDistance = Mathf.Infinity;
+                foreach (Collider target in targets)
                 {
-                    float distanceToTarget = directionToTarget.magnitude;
+                    Vector3 directionToTarget = target.transform.position - transform.position;
+                    float angle = Vector3.Angle(transform.forward, directionToTarget);
 
-                    // 가장 가까운 타겟의 색상 변경
-                    if (distanceToTarget < closestDistance)
+                    if (angle <= detectionAngle * 0.5f)
                     {
-                        monCtr = target.GetComponent<MonsterController>();
-                        if (monCtr != null)
+                        float distanceToTarget = directionToTarget.magnitude;
+                        
+                        if (time <= 1)
                         {
-                            monCtr.SetIsPlayerChase(true);
+                            time += Time.deltaTime * 2f;
                         }
-                        closestDistance = distanceToTarget;
+                        anim.SetLayerWeight(1, time);
+
+                        // 가장 가까운 타겟의 색상 변경
+                        if (distanceToTarget < closestDistance)
+                        {
+                            monCtr = target.GetComponent<MonsterController>();
+                            
+                            closestDistance = distanceToTarget;
+                        }
+                    }
+
+                    if (monCtr != null)
+                    {
+                        monCtr.SetIsPlayerChase(true);
                     }
                 }
             }

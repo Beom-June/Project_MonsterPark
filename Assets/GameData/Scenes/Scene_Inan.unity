@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -145,7 +145,11 @@ PrefabInstance:
     - target: {fileID: 5398020455808189671, guid: db14acc8657f442a7aba618cfeb0b42e, type: 3}
       propertyPath: m_Avatar
       value: 
-      objectReference: {fileID: 9000000, guid: 55eb82650eca76442bdd7c76b846096a, type: 3}
+      objectReference: {fileID: 9000000, guid: 4b04d5eab6e416b41b38ecfc9a645191, type: 3}
+    - target: {fileID: 5398020455808189671, guid: db14acc8657f442a7aba618cfeb0b42e, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: cf8681c7eab148044b329d31dfcc3051, type: 2}
     - target: {fileID: 5398020455808189671, guid: db14acc8657f442a7aba618cfeb0b42e, type: 3}
       propertyPath: m_WarningMessage
       value: "\nBinding warning: Some generic clip(s) animate transforms that are

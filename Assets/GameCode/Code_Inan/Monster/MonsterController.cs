@@ -66,7 +66,6 @@ namespace Monster
                 {
                     currentTime += Time.deltaTime;
                     t = currentTime / scaleDownTime;
-                    Debug.Log(t);
                     transform.localScale = Vector3.Lerp(currentScale, Vector3.zero, t); 
                     
                 }
