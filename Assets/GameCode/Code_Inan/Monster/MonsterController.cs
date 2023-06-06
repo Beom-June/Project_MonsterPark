@@ -10,7 +10,8 @@ namespace Monster
     {
         PlayerInven playerInven;
         PlayerController_Inan playerCtr; // 코드 충돌 조심
-        [SerializeField] private Image img;
+        [SerializeField] private Image hpBarImg; // 체력 바
+        [SerializeField] private GameObject hpObj; //비활성화 시킬 체력 Obj
         [SerializeField] private MonsterState monsterState = MonsterState.IDLE;
         [SerializeField] private MonsterKind monsterKind = MonsterKind.NONE;
         private Color closestOriginalColor;
@@ -24,13 +25,10 @@ namespace Monster
         private float t;
         [SerializeField] private float rotSeepd = 1000.0f;
 
-        Sensor sensor;
-
         private bool isGrabbed = false;
         private bool isPlayerChase = false;
         private void Awake()
         {
-            //img = GetComponentInChildren<Image>();
             closestRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             closestOriginalColor = closestRenderer.material.color;
         }
@@ -52,15 +50,11 @@ namespace Monster
         {
             if(monsterState == MonsterState.ESCAPE)
             {
-                img.fillAmount -= Time.deltaTime;
+                hpBarImg.fillAmount -= Time.deltaTime * 0.5f;
                 closestRenderer.material.color = Color.red;
             }
-            else if(monsterState == MonsterState.IDLE)
-            {
-                closestRenderer.material.color = closestOriginalColor;
-                img.fillAmount = 1.0f;
-            }
-            else if(monsterState == MonsterState.GRABBED)
+
+            if(monsterState == MonsterState.GRABBED)
             {
                 if(t <= 1.0f)
                 {
@@ -78,13 +72,14 @@ namespace Monster
         {
             while (!isGrabbed)
             {
-                if (img.fillAmount <= 0.0f)
-                {
-                    monsterState = MonsterState.GRABBED;
-                }
-                else if (isPlayerChase)
-                {
+
+                if (isPlayerChase)
+                {        
                     monsterState = MonsterState.ESCAPE;
+                    if (hpBarImg.fillAmount <= 0.0f)
+                    {
+                        monsterState = MonsterState.GRABBED;
+                    }
                 }
                 else
                 {
@@ -102,13 +97,16 @@ namespace Monster
                 switch(monsterState)
                 {
                     case MonsterState.IDLE:
-                        Debug.Log("IDLE");
+                        closestRenderer.material.color = closestOriginalColor;
+                        hpObj.SetActive(false);
+                        hpBarImg.fillAmount = 1.0f;
                         break;
                     case MonsterState.ESCAPE:
-                        Debug.Log("escape");
+                        hpObj.SetActive(isPlayerChase);
                         break;
                     case MonsterState.GRABBED:
                         isGrabbed = true;
+                        hpObj.SetActive(false);
                         playerInven.AddItem(this.monsterKind);
                         
                         Debug.Log("grabbed");
@@ -131,14 +129,15 @@ namespace Monster
             return this.isPlayerChase;
         }
 
+        public bool GetMonsterIsGrabbed()
+        {
+            return isGrabbed;
+        }
+
         public void SetMonImage()
         {
-            img.fillAmount -= Time.deltaTime;
+            hpBarImg.fillAmount -= Time.deltaTime;
         }
-        
-
-
-
     }
 }
 

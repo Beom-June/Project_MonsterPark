@@ -749,7 +749,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ebdfb75ba60b4dfc8861f34e177c4ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  img: {fileID: 670273105178073695}
+  hpBarImg: {fileID: 670273105178073695}
+  hpObj: {fileID: 670273106210961199}
   monsterState: 0
   monsterKind: 2
   closestRenderer: {fileID: 0}
@@ -1992,7 +1993,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &670273106210961198
 RectTransform:
   m_ObjectHideFlags: 0

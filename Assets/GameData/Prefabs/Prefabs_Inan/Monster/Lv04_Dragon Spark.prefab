@@ -131,7 +131,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5087803994607979855
 RectTransform:
   m_ObjectHideFlags: 0
@@ -732,7 +732,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ebdfb75ba60b4dfc8861f34e177c4ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  img: {fileID: 5087803994864652651}
+  hpBarImg: {fileID: 5087803994864652651}
+  hpObj: {fileID: 5087803994607979852}
   monsterState: 0
   monsterKind: 3
   closestRenderer: {fileID: 0}
