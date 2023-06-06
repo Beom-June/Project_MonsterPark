@@ -14,10 +14,25 @@ public class PlayerController : MonoBehaviour
     private Animator _playerAnimator;                               //  Animator 저장
     private Rigidbody _playerRigidbody;                             //  Rigidbody 저장
 
+    [SerializeField] private List<MoneyBezierCurves> npcBezierCurves = new List<MoneyBezierCurves>();
+
+    private MoneyBezierCurves bezierCurves;
+
     void Start()
     {
         _playerAnimator = GetComponent<Animator>();
         _playerRigidbody = GetComponent<Rigidbody>();
+
+        // 모든 NPC 찾기
+        GameObject[] npcObjects = GameObject.FindGameObjectsWithTag("NPC");
+        foreach (GameObject npcObject in npcObjects)
+        {
+            bezierCurves = npcObject.GetComponent<MoneyBezierCurves>();
+            if (bezierCurves != null)
+            {
+                npcBezierCurves.Add(bezierCurves);
+            }
+        }
     }
 
     void Update()
@@ -25,6 +40,13 @@ public class PlayerController : MonoBehaviour
         PlayerInput();
         PlayerMove();
         PlayerTurn();
+
+        //GameObject[] npcObjects = GameObject.FindGameObjectsWithTag("NPC");
+        //foreach (GameObject npcObject in npcObjects)
+        //{
+        //     bezierCurves = npcObject.GetComponent<MoneyBezierCurves>();
+
+        //}
     }
 
 
@@ -54,4 +76,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-}
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.CompareTag("MoneyPoint"))
+        {
+            //MoneyBezierCurves bezierCurves = collider.GetComponent<MoneyBezierCurves>();
+
+            if (bezierCurves != null)
+            {
+                npcBezierCurves.Add(bezierCurves);
+                //bezierCurves.boolThrow = true;
+            }
+            foreach (MoneyBezierCurves npcBezierCurve in npcBezierCurves)
+            {
+                npcBezierCurve.boolThrow = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider collider)
+    {
+        if (collider.CompareTag("MoneyPoint"))
+        {
+            //MoneyBezierCurves bezierCurves = collider.GetComponent<MoneyBezierCurves>();
+
+            if (bezierCurves != null)
+            {
+                npcBezierCurves.Remove(bezierCurves);
+            }
+        }
+    }
+    }
