@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,22 +20,36 @@ public static class ListExtensions
         }
     }
 }
+
 public class SafariNpcController : MonoBehaviour
 {
-    [SerializeField] private List<Transform> _wayPoints;                //  Safari Npc가 움직이는 경로
-    [SerializeField] private float _speed;                              //  이동 속도
+    [SerializeField] private List<Transform> _wayPoints;  // Safari Npc가 움직이는 경로
+    [SerializeField] private float _speed;  // 이동 속도
 
-    private Animator _AnimatorSafariNpc;
+    private Animator _animatorSafariNpc;
     private Rigidbody _rigidSafariNpc;
-    private int _waypointIndex;                                         //  waypoint index 값 저장
-    private List<int> _randomIndices = new List<int>();                                   //  첫 번째 포인트에서 방문할 랜덤한 인덱스들을 저장하는 리스트
+    private int _currentWaypointIndex;  // 현재 도달한 웨이포인트의 인덱스를 저장
+    private List<int> _randomIndices = new List<int>();  // 첫 번째 포인트에서 방문할 랜덤한 인덱스들을 저장하는 리스트
+    private int _visitedCount;  // 방문한 중간 지점의 개수
 
-    private int _visitedCount;                                           //  방문한 중간 지점의 개수
+    private SafariNpcController _previousNpc;  // 이전 NPC
+
+    [SerializeField] private float _waitTime = 3.0f;  // 대기 시간
+    private bool _isWaiting;  // 대기 중인지 여부
+    private float _waitTimer;  // 대기 타이머
 
     void Start()
     {
-        _AnimatorSafariNpc = GetComponent<Animator>();
+        _animatorSafariNpc = GetComponent<Animator>();
         _rigidSafariNpc = GetComponent<Rigidbody>();
+
+        // 이전 NPC 가져오기
+        SafariNpcController[] npcControllers = FindObjectsOfType<SafariNpcController>();
+        int index = Array.IndexOf(npcControllers, this);
+        if (index > 0)
+        {
+            _previousNpc = npcControllers[index - 1];
+        }
     }
 
     void Update()
@@ -44,54 +59,71 @@ public class SafariNpcController : MonoBehaviour
 
     private void SafariNpcWaypoint()
     {
-
-        Vector3 _destination = _wayPoints[_waypointIndex].transform.position;
-        Vector3 _newPos = Vector3.MoveTowards(transform.position, _destination, _speed * Time.deltaTime);
-        transform.position = _newPos;
-        _AnimatorSafariNpc.SetFloat("isWalk", 1f);
-
-        // NPC가 이동시 바라보는 방향
-        Vector3 _lookDirection = _destination - transform.position;
-        _lookDirection.y = 0f; // 수직 방향은 고려하지 않음
-        if (_lookDirection != Vector3.zero)
+        // 첫 번째 NPC가 멈추고 있으면 대기
+        if (_currentWaypointIndex == 0 && _previousNpc != null && !_previousNpc.IsMoving())
         {
-            Quaternion _lookRotation = Quaternion.LookRotation(_lookDirection);
-            transform.rotation = _lookRotation;
+            Debug.Log("fffffff");
+            _animatorSafariNpc.SetFloat("isWalk", 0f);
+
+            if (!_isWaiting)
+            {
+                _isWaiting = true;
+                _waitTimer = _waitTime;
+            }
+            else
+            {
+                _waitTimer -= Time.deltaTime;
+                if (_waitTimer <= 0f)
+                {
+                    _currentWaypointIndex++;
+                    _isWaiting = false;
+                }
+            }
+            return;
         }
 
+        Vector3 destination = _wayPoints[_currentWaypointIndex].transform.position;
+        Vector3 newPos = Vector3.MoveTowards(transform.position, destination, _speed * Time.deltaTime);
+        transform.position = newPos;
+        _animatorSafariNpc.SetFloat("isWalk", 1f);
 
-        float _distance = Vector3.Distance(transform.position, _destination);
-        if (_distance <= 0.05f)
+        // NPC가 이동 시 바라보는 방향
+        Vector3 lookDirection = destination - transform.position;
+        lookDirection.y = 0f; // 수직 방향은 고려하지 않음
+        if (lookDirection != Vector3.zero)
         {
-            // 종료 지점 도착시 삭제
-            if (_waypointIndex == _wayPoints.Count - 1)
+            Quaternion lookRotation = Quaternion.LookRotation(lookDirection);
+            transform.rotation = lookRotation;
+        }
+
+        float distance = Vector3.Distance(transform.position, destination);
+        if (distance <= 0.05f)
+        {
+            if (_currentWaypointIndex == _wayPoints.Count - 1)
             {
-                Destroy(this.gameObject);
+                Destroy(gameObject);
                 return;
             }
-            else if (_waypointIndex == 0)
+            else if (_currentWaypointIndex == 0)
             {
-                // 첫 번째 포인트에 도착한 경우
-                _waypointIndex++;
+                _currentWaypointIndex++;
             }
-            else if (_waypointIndex < _wayPoints.Count - 1)
+            else if (_currentWaypointIndex < _wayPoints.Count - 1)
             {
-                // 중간 지점에 도착한 경우
                 if (_visitedCount < 4)
                 {
-                    // 최대 4곳의 중간 지점을 랜덤으로 방문
                     List<int> randomIndices = GetRandomIndices();
-                    _waypointIndex = randomIndices[_visitedCount];
+                    _currentWaypointIndex = randomIndices[_visitedCount];
                     _visitedCount++;
                 }
                 else
                 {
-                    // 이미 2곳의 중간 지점을 방문한 경우, 마지막 지점으로 이동
-                    _waypointIndex = _wayPoints.Count - 1;
+                    _currentWaypointIndex = _wayPoints.Count - 1;
                 }
             }
         }
     }
+
     private List<int> GetRandomIndices()
     {
         List<int> randomIndices = new List<int>();
@@ -103,5 +135,10 @@ public class SafariNpcController : MonoBehaviour
 
         randomIndices.Shuffle();
         return randomIndices;
+    }
+
+    public bool IsMoving()
+    {
+        return _animatorSafariNpc.GetFloat("isWalk") > 0f;
     }
 }
