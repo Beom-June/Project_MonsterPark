@@ -6,6 +6,9 @@ TagManager:
   tags:
   - MoneyPoint
   - Money
+  - FxTemporaire
+  - Counter
+  - Fence
   layers:
   - Default
   - TransparentFX

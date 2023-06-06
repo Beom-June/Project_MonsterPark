@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using EnumTypes;
 
 namespace BrokenVector.LowPolyFencePack
 {
@@ -18,10 +19,27 @@ namespace BrokenVector.LowPolyFencePack
             doorController = GetComponent<DoorController>();
         }
 
-	    void OnMouseDown()
+        private void OnTriggerEnter(Collider other)
 	    {
-	        doorController.ToggleDoor();
+		    GameObject triggerObject = other.gameObject;
+		    
+		    // 문 열림 
+		    if (triggerObject.CompareTag(TagType.Player.ToString()))
+		    {
+			    doorController.ToggleDoor();
+		    }
 	    }
+	    
+	    private void OnTriggerExit(Collider other)
+	    {
+		    GameObject triggerObject = other.gameObject;
 
+		    // 문 닫힘 
+		    if (triggerObject.CompareTag(TagType.Player.ToString()))
+		    {
+			    doorController.ToggleDoor();
+
+		    }
+	    }
 	}
 }
