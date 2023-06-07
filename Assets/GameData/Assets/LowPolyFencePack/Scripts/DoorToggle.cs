@@ -26,7 +26,7 @@ namespace BrokenVector.LowPolyFencePack
 		    // 문 열림 
 		    if (triggerObject.CompareTag(TagType.Player.ToString()))
 		    {
-			    doorController.ToggleDoor();
+			    doorController.OpenDoor();
 		    }
 	    }
 	    
@@ -37,7 +37,7 @@ namespace BrokenVector.LowPolyFencePack
 		    // 문 닫힘 
 		    if (triggerObject.CompareTag(TagType.Player.ToString()))
 		    {
-			    doorController.ToggleDoor();
+			    doorController.CloseDoor();
 
 		    }
 	    }

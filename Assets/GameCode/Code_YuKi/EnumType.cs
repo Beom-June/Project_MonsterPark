@@ -7,13 +7,15 @@ namespace  EnumTypes
     public enum TagType
     {
         Player, 
-        Customer,
+        NPC,
         Counter,
+        MoneyPoint,
         Fence,
     }
 
     public enum AnimType
     {
+        activate,
 
     }
 
@@ -21,7 +23,6 @@ namespace  EnumTypes
     {
         None,
         Sell,
-        Buy,
     }
     
 }
