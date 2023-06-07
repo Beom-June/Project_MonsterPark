@@ -60,11 +60,11 @@ public class SafariNpcController : MonoBehaviour
         // SafariNpcWaypoint();
         if (Input.GetMouseButtonUp(0))
         {
-            if (_istest)
+            // if (_istest)
                 // NPC 삭제 로직을 추가하세요.
                 // 예를 들어, 해당 NPC 오브젝트를 제거하거나 비활성화할 수 있습니다.
                 // 이후에 OnTransformChildrenChanged 함수가 호출됩니다.
-                 gameObject.SetActive(false);
+                //  gameObject.SetActive(false);
         }
     }
 
@@ -73,7 +73,6 @@ public class SafariNpcController : MonoBehaviour
         // 첫 번째 NPC가 멈추고 있으면 대기
         if (_currentWaypointIndex == 0 && _previousNpc != null && !_previousNpc.IsMoving())
         {
-            Debug.Log("fffffff");
             _animatorSafariNpc.SetFloat("isWalk", 0f);
 
             if (!_isWaiting)
