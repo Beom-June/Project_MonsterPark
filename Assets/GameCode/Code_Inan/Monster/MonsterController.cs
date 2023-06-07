@@ -190,11 +190,12 @@ namespace Monster
                     case MonsterState.GRABBED:
                         isGrabbed = true;
                         hpObj.SetActive(false);
-                        playerInven.AddItem(this.monsterKind);
+                        
                         
                         Debug.Log("grabbed");
-
-                        Destroy(this.gameObject, 1.0f);
+                        yield return new WaitForSeconds(1.0f);
+                        Destroy(gameObject);
+                        playerInven.AddItem(this.monsterKind);
                         break;
                 }
                 yield return new WaitForSeconds(0.02f);

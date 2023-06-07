@@ -38,7 +38,7 @@ namespace Player
                 itemCnt++;
                 monsCount[(int)monKind]++;
                 
-                gmr.AddMonsterUI((int)monKind, monsCount[(int)monKind]);
+                gmr.AddMonsterUI((int)monKind, monsCount[(int)monKind], itemCnt, maxItemCnt);
                 //Debug.Log($"All Item Cnt {itemCnt}");
                 //Debug.Log($"{System.Enum.GetName(typeof(MonsterKind), (int)monKind)} : {monsCount[(int)monKind]}");
             }

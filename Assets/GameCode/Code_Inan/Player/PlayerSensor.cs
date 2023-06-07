@@ -8,6 +8,8 @@ namespace Player
 {
     public class PlayerSensor : MonoBehaviour
     {
+        static public PlayerSensor instance = null;
+
         [SerializeField] float detectionAngle = 45f;  // 감지 각도
         [SerializeField] float detectionRange = 5f;   // 감지 범위
         [SerializeField] LayerMask targetLayer;       // 감지할 레이어
@@ -29,9 +31,18 @@ namespace Player
 
         private void Awake()
         {
+            if(instance != null)
+            {
+                Destroy(this.gameObject);
+            }
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+
             anim = GetComponent<Animator>();
             lr = GetComponent<LineRenderer>();
             playerCtr = GetComponent<PlayerController_Inan>();
+
+
             
         }
 

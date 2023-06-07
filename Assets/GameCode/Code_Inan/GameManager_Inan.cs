@@ -3,17 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Monster;
+using Player;
+
 public class GameManager_Inan : MonoBehaviour
 {
     public static GameManager_Inan instance = null;
 
+    PlayerSensor playerSensorCtr;    
 
+    [Header("Monster UI")] //우측 상단 UI
     [SerializeField] private Sprite[] monsTexture = new Sprite[5];
     private GameObject[] monsObj = new GameObject[5];
     private Text[] monsText = new Text[5];
     private bool[] checkTexture = new bool[5];
     [SerializeField] private GameObject panelObj;
     [SerializeField] private GameObject monPrefab;
+
+    [Header("Player UI")] //좌측 상단 UI / PlayerUI
+    [SerializeField] private Text monsBallCntText;
+    [SerializeField] private GameObject maxUI;
+    
     private void Awake()
     {
         if(instance != null)
@@ -26,7 +35,7 @@ public class GameManager_Inan : MonoBehaviour
 
     void Start()
     {
-        
+        playerSensorCtr = PlayerSensor.instance;
     }
 
     // Update is called once per frame
@@ -35,7 +44,7 @@ public class GameManager_Inan : MonoBehaviour
         
     }
 
-    public void AddMonsterUI(int monidx, int monsCount)
+    public void AddMonsterUI(int monidx, int monsCount, int curItemCnt, int maxItemCnt)
     {
         if (!checkTexture[monidx])
         {
@@ -51,6 +60,20 @@ public class GameManager_Inan : MonoBehaviour
         {
             monsText[monidx].text = $"{monsCount}";
         }
+
+        if(curItemCnt / maxItemCnt == 1)
+        {
+            playerSensorCtr.enabled = false;
+            monsBallCntText.text = $"Max!";
+            maxUI.SetActive(true);
+        }
+        else
+        {
+            playerSensorCtr.enabled = true;
+            monsBallCntText.text = $"{curItemCnt}/{maxItemCnt}";
+            maxUI.SetActive(false);
+        }
+       
 
     }
 }
