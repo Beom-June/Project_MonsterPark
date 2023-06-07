@@ -52,10 +52,10 @@ public class Fence : MonoBehaviour
 
         if (!fences.activeSelf && !canvases.activeSelf)
         {
+            cameraController.SetNewCamTransform(cam.transform);
             Debug.Log(gameObject.name);
             canvases.SetActive(true);
             cameraController.isMove = true;
-            StartCoroutine(cameraController.MoveCam(cam));
         }
         
     }
