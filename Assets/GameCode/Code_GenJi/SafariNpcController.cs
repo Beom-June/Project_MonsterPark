@@ -57,15 +57,7 @@ public class SafariNpcController : MonoBehaviour
 
     void Update()
     {
-        // SafariNpcWaypoint();
-        if (Input.GetMouseButtonUp(0))
-        {
-            // if (_istest)
-                // NPC 삭제 로직을 추가하세요.
-                // 예를 들어, 해당 NPC 오브젝트를 제거하거나 비활성화할 수 있습니다.
-                // 이후에 OnTransformChildrenChanged 함수가 호출됩니다.
-                //  gameObject.SetActive(false);
-        }
+
     }
 
     private void SafariNpcWaypoint()

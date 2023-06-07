@@ -21,6 +21,7 @@ public class MoneyBezierCurves : MonoBehaviour
     [SerializeField] private bool _isThrow = false;
     [SerializeField] private bool _shouldThrow = false;
 
+
     #region Property
     public bool boolThrow
     {

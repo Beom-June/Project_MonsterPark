@@ -11,11 +11,26 @@ public class ObjectPile : MonoBehaviour
     [SerializeField] private int _currentObjects = 0;                                                //  현재 오브젝트 수
     [SerializeField] private float _objectSpacing = 1.0f;                                             //  오브젝트간의 간격
     [SerializeField] private List<GameObject> spawnedObjects; // 생성된 오브젝트를 추적하기 위한 리스트
-    private Coroutine generateCoroutine; // 코루틴 참조 변수
+
+    [SerializeField] private List<BuyerController> _npcBuyer = new List<BuyerController>();
+    private BuyerController buyerController;
     private void Start()
     {
         // StartCoroutine(GenerateObjects(5));
+        // 모든 NPC 찾기
+        GameObject[] buyerControllers = GameObject.FindGameObjectsWithTag("NPC");
+        foreach (GameObject buyer in buyerControllers)
+        {
+            buyerController = buyer.GetComponent<BuyerController>();
+            if (buyerController != null)
+            {
+                _npcBuyer.Add(buyerController);
+            }
+        }
+        Debug.Log(buyerController != null);
+
     }
+
     // 쌓는 코루틴
     private IEnumerator GenerateObjects(int _level)
     {
@@ -43,23 +58,22 @@ public class ObjectPile : MonoBehaviour
     // 제거하는 코루틴
     private IEnumerator RemoveObjects()
     {
-        int totalObjects = _rows * _columns;
-        int currentIndex = spawnedObjects.Count - 1;
+        int _totalObjects = _rows * _columns;
+        int _currentIndex = spawnedObjects.Count - 1;
 
-        while (currentIndex >= 0)
+        while (_currentIndex >= 0)
         {
-            GameObject objToRemove = spawnedObjects[currentIndex];
-            spawnedObjects.RemoveAt(currentIndex);
+            GameObject objToRemove = spawnedObjects[_currentIndex];
+            spawnedObjects.RemoveAt(_currentIndex);
             Destroy(objToRemove);
             _currentObjects--;
 
-            currentIndex--;
+            _currentIndex--;
 
             yield return new WaitForSeconds(0.1f);
         }
 
-        // 코루틴이 완료되었을 때 필요한 작업을 수행합니다.
-        // 예: 코루틴 종료 후의 동작 등
+        // 코루틴이 완료되었을 때 필요한 작업을 수행. 고객 npc 퇴장
     }
 
     private void OnTriggerEnter(Collider collider)
@@ -72,7 +86,10 @@ public class ObjectPile : MonoBehaviour
 
         if (collider.CompareTag("Player"))
         {
-            Debug.Log("dfasfasd");
+            foreach (BuyerController buyerController in _npcBuyer)
+            {
+                buyerController.isExit = true; // BuyerController의 _isExitScene 값을 변경
+            }
             StartCoroutine(RemoveObjects());
         }
     }
