@@ -58,22 +58,26 @@ public class LineUpController : MonoBehaviour
                 _lineAreaHasChild[i] = true;
 
                 // 이전 LineArea에서 NPC를 가져와서 현재 LineArea로 이동시킴
-            if (i > 0)
-            {
-                Transform previousLineArea = _lineArea[i];
-                if (previousLineArea.childCount > 0)
+                if (i > 0)
                 {
-                    Transform childNPC = previousLineArea.GetChild(0);
-                    childNPC.position = _lineArea[i].position;
-                    childNPC.parent = _lineArea[i];
-
-                    // 첫 번째 LineArea의 자식이 없어지면 두 번째 LineArea의 자식을 첫 번째 LineArea의 자식으로 이동하지 않도록 처리
-                    if (i == 1 && !_lineAreaHasChild[0])
+                    Transform previousLineArea = _lineArea[i];
+                    if (previousLineArea.childCount > 0)
                     {
-                        childNPC.parent = previousLineArea;
+                        Transform childNPC = previousLineArea.GetChild(0);
+                        childNPC.position = _lineArea[i].position;
+                        childNPC.parent = _lineArea[i];
+
+                        // 첫 번째 LineArea의 자식이 없어지면 두 번째 LineArea의 자식을 첫 번째 LineArea의 자식으로 이동하지 않도록 처리
+                        if (i == 1 && !_lineAreaHasChild[0])
+                        {
+                            Debug.Log("첫번째 자식 체크");
+                            // 옮겨주고
+                            childNPC.parent = _lineArea[i - 1];
+                            // 포지션값 변경
+                            childNPC.position = _lineArea[i - 1].position;
+                        }
                     }
                 }
-            }
             }
             else
             {
