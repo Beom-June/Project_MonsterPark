@@ -8,7 +8,7 @@ namespace Player
     public class PlayerInven : MonoBehaviour
     {
         public static PlayerInven instance = null;
-        
+        GameManager_Inan gmr;
         int[] monsCount = new int[5];
 
         private int itemCnt;
@@ -25,6 +25,7 @@ namespace Player
 
         private void Start()
         {
+            gmr = GameManager_Inan.instance;
             itemCnt = 0;
             maxItemCnt = 5;
         }
@@ -36,9 +37,10 @@ namespace Player
             {
                 itemCnt++;
                 monsCount[(int)monKind]++;
-
-                Debug.Log($"All Item Cnt {itemCnt}");
-                Debug.Log($"{System.Enum.GetName(typeof(MonsterKind), (int)monKind)} : {monsCount[(int)monKind]}");
+                
+                gmr.AddMonsterUI((int)monKind, monsCount[(int)monKind]);
+                //Debug.Log($"All Item Cnt {itemCnt}");
+                //Debug.Log($"{System.Enum.GetName(typeof(MonsterKind), (int)monKind)} : {monsCount[(int)monKind]}");
             }
             else
             {

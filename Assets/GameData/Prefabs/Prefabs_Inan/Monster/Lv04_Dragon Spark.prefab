@@ -661,6 +661,7 @@ GameObject:
   - component: {fileID: 5465371682562120404}
   - component: {fileID: 5087803994351305026}
   - component: {fileID: 5087803994351305037}
+  - component: {fileID: 1465659915}
   m_Layer: 6
   m_Name: Lv04_Dragon Spark
   m_TagString: Untagged
@@ -711,7 +712,7 @@ Animator:
   m_GameObject: {fileID: 5465371682552768790}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 6f33148ca6b97dc42aba76ab382fd39e, type: 3}
-  m_Controller: {fileID: 9100000, guid: e47510c6130941c428141e3a1ec5e814, type: 2}
+  m_Controller: {fileID: 9100000, guid: 118116738f9774025ab3659a14d18227, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -737,6 +738,8 @@ MonoBehaviour:
   monsterState: 0
   monsterKind: 3
   closestRenderer: {fileID: 0}
+  movementSpeed: 3
+  idleMoveTime: 100
   scaleDownTime: 0.5
   rotSeepd: 1000
 --- !u!135 &5087803994351305037
@@ -752,6 +755,28 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.6
   m_Center: {x: 0, y: 0.54, z: 0}
+--- !u!195 &1465659915
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5465371682552768790}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 200
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &5465371682552768792
 GameObject:
   m_ObjectHideFlags: 0

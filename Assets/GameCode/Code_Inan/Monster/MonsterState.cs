@@ -3,6 +3,7 @@ namespace Monster
     public enum MonsterState
     {
         IDLE,
+        WALK,
         ESCAPE,
         GRABBED,
     }
