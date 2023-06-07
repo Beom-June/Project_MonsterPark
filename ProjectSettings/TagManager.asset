@@ -10,6 +10,7 @@ TagManager:
   - Counter
   - Fence
   - NPC
+  - LineArea
   layers:
   - Default
   - TransparentFX

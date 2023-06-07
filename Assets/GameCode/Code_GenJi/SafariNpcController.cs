@@ -38,6 +38,9 @@ public class SafariNpcController : MonoBehaviour
     private bool _isWaiting;  // 대기 중인지 여부
     private float _waitTimer;  // 대기 타이머
 
+
+
+    [SerializeField]private bool _istest = false;
     void Start()
     {
         _animatorSafariNpc = GetComponent<Animator>();
@@ -54,7 +57,15 @@ public class SafariNpcController : MonoBehaviour
 
     void Update()
     {
-        SafariNpcWaypoint();
+        // SafariNpcWaypoint();
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (_istest)
+                // NPC 삭제 로직을 추가하세요.
+                // 예를 들어, 해당 NPC 오브젝트를 제거하거나 비활성화할 수 있습니다.
+                // 이후에 OnTransformChildrenChanged 함수가 호출됩니다.
+                 gameObject.SetActive(false);
+        }
     }
 
     private void SafariNpcWaypoint()
@@ -140,5 +151,12 @@ public class SafariNpcController : MonoBehaviour
     public bool IsMoving()
     {
         return _animatorSafariNpc.GetFloat("isWalk") > 0f;
+    }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.CompareTag("LineArea"))
+        {
+        }
     }
 }
