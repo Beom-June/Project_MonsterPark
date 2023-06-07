@@ -11,10 +11,12 @@ public class ObjectPile : MonoBehaviour
     [SerializeField] private int _currentObjects = 0;                                                //  현재 오브젝트 수
     [SerializeField] private float _objectSpacing = 1.0f;                                             //  오브젝트간의 간격
     [SerializeField] private List<GameObject> spawnedObjects; // 생성된 오브젝트를 추적하기 위한 리스트
+    private Coroutine generateCoroutine; // 코루틴 참조 변수
     private void Start()
     {
         // StartCoroutine(GenerateObjects(5));
     }
+    // 쌓는 코루틴
     private IEnumerator GenerateObjects(int _level)
     {
         int totalLevels = Mathf.CeilToInt((float)_maxObjects / (_rows * _columns)); // 총 레벨 수 계산
@@ -38,12 +40,40 @@ public class ObjectPile : MonoBehaviour
         }
     }
 
+    // 제거하는 코루틴
+    private IEnumerator RemoveObjects()
+    {
+        int totalObjects = _rows * _columns;
+        int currentIndex = spawnedObjects.Count - 1;
+
+        while (currentIndex >= 0)
+        {
+            GameObject objToRemove = spawnedObjects[currentIndex];
+            spawnedObjects.RemoveAt(currentIndex);
+            Destroy(objToRemove);
+            _currentObjects--;
+
+            currentIndex--;
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        // 코루틴이 완료되었을 때 필요한 작업을 수행합니다.
+        // 예: 코루틴 종료 후의 동작 등
+    }
+
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag("Money"))
         {
             int _level = Mathf.CeilToInt((float)_currentObjects / (_rows * _columns)); // 현재 레벨 계산
             StartCoroutine(GenerateObjects(_level));
+        }
+
+        if (collider.CompareTag("Player"))
+        {
+            Debug.Log("dfasfasd");
+            StartCoroutine(RemoveObjects());
         }
     }
 }
