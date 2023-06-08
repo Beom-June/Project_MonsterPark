@@ -149,12 +149,10 @@ namespace Monster
                         closestRenderer.material.color = closestOriginalColor;
                         hpObj.SetActive(false);
                         hpBarImg.fillAmount = 1.0f;
-            
-                        Debug.Log("Change Walk");
                         break;
 
                     case MonsterState.WALK:
-                        Debug.Log("Walk 입니다");
+                    
                         agent.isStopped = false;
                         agent.speed = 3f;
                         anim.SetBool(hashWalk, true);

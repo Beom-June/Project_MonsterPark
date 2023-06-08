@@ -10,9 +10,17 @@ namespace Player
         public static PlayerInven instance = null;
         UIManager gmr;
         int[] monsCount = new int[5];
+        [SerializeField] private GameObject[] monsObj = new GameObject[5];
+
+        [SerializeField] private Transform monBallPos;
+        [SerializeField] private GameObject monBallPrefab;
 
         private int itemCnt;
         private int maxItemCnt;
+        
+        private float time;
+        private bool isCageOut = false;
+   
 
         private void Awake() {
             if(instance != null)
@@ -47,6 +55,94 @@ namespace Player
                 Debug.Log("크기 초과");
             }
             
+        }
+
+        private void OnTriggerEnter(Collider coll)
+        {   
+
+            if(coll.CompareTag("Fence"))
+            {
+                isCageOut = false;
+                FenceController fenceCtr = coll.GetComponent<FenceController>();
+                Debug.Log("팬스 충돌");
+                switch(fenceCtr.GetMonsState())
+                {
+                    case MonsterKind.ONE:
+                        if (monsCount[(int)MonsterKind.ONE] != 0)
+                        {
+                            StartCoroutine(CreateMonBall((int)MonsterKind.ONE, fenceCtr));
+                        }
+
+                        break;
+
+                    case MonsterKind.TWO:
+                        if(monsCount[(int)MonsterKind.TWO] != 0)
+                        {
+                            
+                        }
+                        break;
+
+                    case MonsterKind.THREE:
+                        if(monsCount[(int)MonsterKind.THREE] != 0)
+                        {
+
+                        }
+                        break;
+
+                    case MonsterKind.FOUR:
+                        if(monsCount[(int)MonsterKind.FOUR] != 0)
+                        {
+
+                        }
+                        break;
+                }
+
+            }
+        }
+
+        private void OnTriggerExit(Collider coll)
+        {
+            if(coll.CompareTag("Fence"))
+            {
+                Debug.Log("Fence Out");
+                isCageOut = true;
+            }
+            
+        }
+
+        IEnumerator CreateMonBall(int monIdx, FenceController _fenceCtr)
+        {
+            while (monsCount[monIdx] != 0 && !isCageOut)
+            {
+                GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
+                Transform targetTr = _fenceCtr.GetRandDest();
+                MonsterBallController monBallCtr = monBallObj.GetComponent<MonsterBallController>();
+                monBallCtr.MonsterBall_Init(monBallPos, targetTr, true, monsObj[monIdx]);
+              
+                itemCnt--;
+                monsCount[monIdx]--;
+                gmr.AddMonsterUI(monIdx, monsCount[monIdx], itemCnt, maxItemCnt);
+
+                yield return new WaitForSeconds(1.0f);
+                Destroy(monBallObj);
+            }
+        }
+
+
+
+
+
+
+        public int GetMonsCount(MonsterKind monKind)
+        {
+            if(monsCount[(int)monKind] != 0)
+            {
+                return monsCount[(int)monKind];
+            }
+            else
+            {
+                return 0;
+            }
         }
 
     }

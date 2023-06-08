@@ -1045,6 +1045,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3252c83e5de754f999b77571464e74f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monsObj:
+  - {fileID: 4151389978645513086, guid: fc67a59b204f9428d9fa506e6022474f, type: 3}
+  - {fileID: 4792127257916293907, guid: ba14dc2fa917947ec9d1ed81bc0a0b34, type: 3}
+  - {fileID: 416787094263763893, guid: 83ab5df2cad0943f6a1298cf4f96a367, type: 3}
+  - {fileID: 5465371682552768790, guid: 70fe26c8fb0984690b694548c73c2fad, type: 3}
+  - {fileID: 7156022773439293490, guid: 4dff5fa01cbfc472bbb613b07613a526, type: 3}
+  monBallPos: {fileID: 7892112094709183245}
+  monBallPrefab: {fileID: 8009189206866819860, guid: b2e494858e82c4f3f9d283f3d7d7618b, type: 3}
 --- !u!114 &297939386
 MonoBehaviour:
   m_ObjectHideFlags: 0

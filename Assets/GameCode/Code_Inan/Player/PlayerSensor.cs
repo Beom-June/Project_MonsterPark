@@ -10,9 +10,9 @@ namespace Player
     {
         static public PlayerSensor instance = null;
 
-        [SerializeField] float detectionAngle = 45f;  // 감지 각도
-        [SerializeField] float detectionRange = 5f;   // 감지 범위
-        [SerializeField] LayerMask targetLayer;       // 감지할 레이어
+        [SerializeField] float detectionAngle = 45f;  // ???? ????
+        [SerializeField] float detectionRange = 5f;   // ???? ????
+        [SerializeField] LayerMask targetLayer;       // ?????? ?????
         //[SerializeField] float alphaColor = 0.3f;
         [SerializeField] Color color;
 
@@ -56,17 +56,15 @@ namespace Player
 
         private void Update()
         {
-            // 부채꼴 모양의 감지
+            // ????? ????? ????
             Collider[] targets = Physics.OverlapSphere(transform.position, detectionRange, targetLayer);
-            bool isTargetDetected = targets.Length > 0; // 타겟이 감지되었는지 여부 확인
+            bool isTargetDetected = targets.Length > 0; // ????? ??????????? ???? ???
 
-            //잡혔을 때
+            //?????? ??
             if (monCtr != null)
             {
                 if (monCtr.GetMonsterIsGrabbed())
                 {
-                    Debug.Log("몬스터 잡힘");
-
                     anim.SetLayerWeight(1, time);
 
                     MonsterBallMarkerDeactive();
@@ -76,7 +74,7 @@ namespace Player
             }
 
    
-            //감지 안됐을 때
+            //???? ????? ??
             if (!isTargetDetected)
             {
                 if (time >= 0)
@@ -98,8 +96,8 @@ namespace Player
                 float closestDistance = Mathf.Infinity;
                 foreach (Collider target in targets)
                 {
-                    Vector3 directionToTarget = target.transform.position - transform.position; //target과의 거리
-                    float angle = Vector3.Angle(transform.forward, directionToTarget); // 타겟과의 각도
+                    Vector3 directionToTarget = target.transform.position - transform.position; //target???? ???
+                    float angle = Vector3.Angle(transform.forward, directionToTarget); // ?????? ????
 
                     if (angle <= detectionAngle * 0.5f)
                     {
@@ -112,14 +110,12 @@ namespace Player
                         }
                         anim.SetLayerWeight(1, time);
 
-                        // 가장 가까운 타겟의 색상 변경
+                        // ???? ????? ????? ???? ????
                         if (distanceToTarget < closestDistance && !detected)
                         {
                             monCtr = target.GetComponent<MonsterController>();
                             currentTarget = target;
                             closestDistance = distanceToTarget;
-
-                            Debug.Log("최단 몬스터 탐색 할당");
                         }
                     }
                     else
@@ -138,7 +134,6 @@ namespace Player
                                 monCtr.SetIsPlayerChase(false);
                                 monCtr = null;
                                 detected = false;
-                                Debug.Log("기존 검사하던거 범위에서 벗어남");
                             }
                         }
 
@@ -151,14 +146,14 @@ namespace Player
                 {
                     monCtr.SetIsPlayerChase(true);
                     MonsterBallMarkerShoot();
-                    Debug.Log("몬스터 추적");
+                    Debug.Log("???? ????");
                     detected = true;
                 }
             }
 
         }
 
-        //몬스터볼 광선 Set
+        //????? ???? Set
         void MonsterBallMarkerShoot()
         {
             monsterballTr = playerCtr.GetMonsterBallPos();
@@ -169,7 +164,7 @@ namespace Player
             lr.SetPosition(1, monCtr.transform.position);
         }
 
-        //몬스터볼 광선 초기화
+        //????? ???? ????
         void MonsterBallMarkerDeactive()
         {
             lr.SetPosition(0, Vector3.zero);
@@ -203,7 +198,7 @@ namespace Player
             {
                 Quaternion rotation = startRotation * Quaternion.Euler(0f, i * angleStep, 0f);
                 Vector3 direction = rotation * transform.forward;
-                vertices[i + 1] = transform.position + (Vector3.up * 0.01f) + direction * detectionRange; // 부채꼴 버텍스
+                vertices[i + 1] = transform.position + (Vector3.up * 0.01f) + direction * detectionRange; // ????? ?????
                 colors[i + 1] = color;
 
                 if (i < numSegments)
@@ -225,7 +220,7 @@ namespace Player
 
         private void OnDrawGizmos()
         {
-            // 감지 범위를 시각적으로 표시
+            // ???? ?????? ?ð??????? ???
             Gizmos.color = color;
             Quaternion leftRayRotation = Quaternion.AngleAxis(-detectionAngle * 0.5f, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(detectionAngle * 0.5f, Vector3.up);
