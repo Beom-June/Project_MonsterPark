@@ -12,10 +12,8 @@ public class LineUpController : MonoBehaviour
 
     void Start()
     {
-        // _safariNpc = GetComponent<SafariNpcController>();
-        // LineUpNPCs();
         InitializeLineAreaHasChild();
-                // 모든 NPC 찾기
+        // 모든 NPC 찾기
         GameObject[] npcObjects = GameObject.FindGameObjectsWithTag("NPC");
         foreach (GameObject npcObject in npcObjects)
         {
@@ -32,22 +30,6 @@ public class LineUpController : MonoBehaviour
         CheckLineAreaChildren();
     }
 
-    // private void LineUpNPC()
-    // {
-    //     // 각 하위 트랜스폼에 순서대로 줄섬
-    //     for (int i = 0; i < _lineArea.Count; i++)
-    //         if (_lineArea[i] != null)
-    //         {
-    //             {
-    //                 // NPC를 _lineArea 리스트에 있는 위치로 이동시킵니다.
-    //                 _lineArea[i].position = transform.position + new Vector3(i * 2, 0, 0);
-
-    //                 // NPC가 LineUpController를 부모로 설정합니다.
-    //                 _lineArea[i].parent = transform;
-    //             }
-    //         }
-    // }
-
     public void CheckLineAreaChildren()
     {
         for (int i = 0; i < _lineArea.Count; i++)
@@ -57,9 +39,12 @@ public class LineUpController : MonoBehaviour
             {
                 Debug.Log(_lineArea[i].name);
                 _lineAreaHasChild[i] = true;
-                _safariNpc.WaitAtFirstWaypoint(10f);
+
+
                 if (i == 0)
                 {
+                    _safariNpc._isNpcWaitingTime = true;
+                    _safariNpc._WaitTimer = _safariNpc._WaitTime;
                 }
                 if (i > 0)
                 {
@@ -72,6 +57,7 @@ public class LineUpController : MonoBehaviour
 
                         if (!_lineAreaHasChild[i - 1])
                         {
+                            // 지금 여기 안탐
                             // 첫 번째 LineArea의 자식이 없어지면 두 번째 LineArea의 자식을 첫 번째 LineArea의 자식으로 이동
                             childNPC.position = currentLineArea.position;
                             childNPC.parent = currentLineArea;
@@ -81,6 +67,10 @@ public class LineUpController : MonoBehaviour
                             // 첫 번째 LineArea의 자식이 아직 있을 경우 두 번째 자식으로 보내지 않고 다시 첫 번째 LineArea로 돌려보냄
                             childNPC.position = previousLineArea.position;
                             childNPC.parent = previousLineArea;
+
+                            _safariNpc._isNpcWaitingTime = true;
+                            _safariNpc._WaitTimer = _safariNpc._WaitTime;
+                            Debug.Log("@@@@");
                         }
                     }
                 }

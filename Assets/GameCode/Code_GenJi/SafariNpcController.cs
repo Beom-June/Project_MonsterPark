@@ -43,8 +43,18 @@ public class SafariNpcController : MonoBehaviour
     #region Property
     public bool _isNpcWaitingTime
     {
-        get {return _isWaiting;}
-        set{_isWaiting = value;}
+        get { return _isWaiting; }
+        set { _isWaiting = value; }
+    }
+
+    public float _WaitTime
+    {
+        get => _waitTime;
+    }
+
+    public float _WaitTimer
+    {
+        set { _waitTimer = value;               }
     }
     #endregion
 
@@ -72,6 +82,7 @@ public class SafariNpcController : MonoBehaviour
             return;
         }
 
+        // 웨이팅 카운트 세는 곳
         if (_isWaiting)
         {
             _animatorSafariNpc.SetFloat("isWalk", 0f);
@@ -104,7 +115,7 @@ public class SafariNpcController : MonoBehaviour
             // 1번째 인덱스부터 순서대로 이동
             _destination = _wayPoints[_currentWaypointIndex];
         }
-        
+
 
         Vector3 newPos = Vector3.MoveTowards(transform.position, _destination.position, _speed * Time.deltaTime);
         transform.position = newPos;
@@ -124,6 +135,7 @@ public class SafariNpcController : MonoBehaviour
         {
             if (_currentWaypointIndex == 0)
             {
+                Debug.Log("여기서 받아옴");
                 _isWaiting = true;
                 _waitTimer = _waitTime;
             }
@@ -131,12 +143,19 @@ public class SafariNpcController : MonoBehaviour
             {
                 if (_visitedCount < 4)
                 {
+                    // 다음 포인트 가면 여기로 들어옴 지금
+                    Debug.Log("꼬임 방지 디버그====>");
+                    _isWaiting = true;
+                    _waitTimer = _waitTime;
                     List<int> randomIndices = GetRandomIndices();
                     _currentWaypointIndex = randomIndices[_visitedCount];
                     _visitedCount++;
                 }
                 else
                 {
+                    Debug.Log("444444444444");
+                    _isWaiting = true;
+                    _waitTimer = _waitTime;
                     _currentWaypointIndex = _wayPoints.Count - 1;
                 }
             }
