@@ -117,7 +117,7 @@ namespace Player
                 GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
                 Transform targetTr = _fenceCtr.GetRandDest();
                 MonsterBallController monBallCtr = monBallObj.GetComponent<MonsterBallController>();
-                monBallCtr.MonsterBall_Init(monBallPos, targetTr, true, monsObj[monIdx]);
+                monBallCtr.MonsterBall_Init(monBallPos, targetTr, true, monsObj[monIdx], 5.0f);
               
                 itemCnt--;
                 monsCount[monIdx]--;

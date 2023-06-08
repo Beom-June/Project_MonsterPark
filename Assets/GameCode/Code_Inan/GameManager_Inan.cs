@@ -63,13 +63,13 @@ public class GameManager_Inan : MonoBehaviour
 
         if(curItemCnt / maxItemCnt == 1)
         {
-            playerSensorCtr.enabled = false;
+            playerSensorCtr.SetIsMaxItem(true);
             monsBallCntText.text = $"Max!";
             maxUI.SetActive(true);
         }
         else
         {
-            playerSensorCtr.enabled = true;
+            playerSensorCtr.SetIsMaxItem(false);
             monsBallCntText.text = $"{curItemCnt}/{maxItemCnt}";
             maxUI.SetActive(false);
         }

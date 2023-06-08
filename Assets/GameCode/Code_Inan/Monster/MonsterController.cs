@@ -131,11 +131,16 @@ namespace Monster
                 {
                     currentTime += Time.deltaTime;
                     t = currentTime / scaleDownTime;
-                    transform.localScale = Vector3.Lerp(currentScale, Vector3.zero, t); 
-                    
+                    transform.localScale = Vector3.Lerp(currentScale, Vector3.zero, t);
+                    transform.Rotate(Vector3.up * Time.deltaTime * rotSeepd);
+                    transform.position = Vector3.Lerp(currentPosition, playerCtr.GetMonsterBallPos().position, t);
                 }
-                transform.Rotate(Vector3.up * Time.deltaTime * rotSeepd);
-                transform.position = Vector3.Lerp(currentPosition, playerCtr.GetMonsterBallPos().position, t);
+                else
+                {
+                    this.gameObject.layer = 0;
+                }
+
+                
             }
         }
 
@@ -284,6 +289,11 @@ namespace Monster
         public bool GetMonsterIsGrabbed()
         {
             return isGrabbed;
+        }
+
+        public void SetMonsterIsGrabbed(bool _set)
+        {
+            isGrabbed = _set;
         }
 
         public void SetMonImage()
