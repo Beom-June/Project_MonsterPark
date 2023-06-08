@@ -6,6 +6,8 @@ public class LineUpController : MonoBehaviour
 {
     [SerializeField] private List<Transform> _lineArea;                     //  NPC가 줄 서는 위치
     [SerializeField] private List<bool> _lineAreaHasChild;                  //  LineArea의 자식 여부를 나타내는 리스트
+    private bool _reachedFirstPoint = false; // 첫 번째 포인트 도착 여부를 나타내는 변수
+
     void Start()
     {
         // LineUpNPCs();
@@ -14,18 +16,6 @@ public class LineUpController : MonoBehaviour
 
     void Update()
     {
-
-        // 플레이어가 특정 위치에 닿으면, NPC는 돈을 던지고 밖으로 향함
-        // 플레이어와 충돌 감지 로직 등을 구현해야 합니다.
-
-
-        // LineArea에 자식이 추가되었는지 체크
-        // bool hasChildren = CheckLineAreaChildren();
-        // if (hasChildren)
-        // {
-        //     Debug.Log("ffff");
-        //     // LineArea에 자식이 추가되었음을 처리하는 로직을 추가합니다.
-        // }
         CheckLineAreaChildren();
     }
 
@@ -44,47 +34,88 @@ public class LineUpController : MonoBehaviour
                 }
             }
     }
+
+    // public void CheckLineAreaChildren()
+    // {
+    //     for (int i = 0; i < _lineArea.Count; i++)
+    //     {
+    //         LineArea lineArea = _lineArea[i].GetComponent<LineArea>();
+    //         if (lineArea.HasChildren())
+    //         {
+    //             // LineArea에 자식이 추가되었음을 감지
+    //             // Debug.Log("LineArea에 자식이 추가");
+    //             Debug.Log(_lineArea[i].name);
+
+    //             _lineAreaHasChild[i] = true;
+
+    //             // 이전 LineArea에서 NPC를 가져와서 현재 LineArea로 이동시킴
+    //             if (i > 0)
+    //             {
+    //                 Transform previousLineArea = _lineArea[i];
+    //                 if (previousLineArea.childCount > 0)
+    //                 {
+    //                     Transform childNPC = previousLineArea.GetChild(0);
+    //                     childNPC.position = _lineArea[i].position;
+    //                     childNPC.parent = _lineArea[i];
+
+    //                     // 첫 번째 LineArea의 자식이 없어지면 두 번째 LineArea의 자식을 첫 번째 LineArea의 자식으로 이동하지 않도록 처리
+    //                     if (i == 1 && !_lineAreaHasChild[0])
+    //                     {
+    //                         Debug.Log("첫번째 자식 체크");
+    //                         // 옮겨주고
+    //                         childNPC.parent = _lineArea[i - 1];
+    //                         // 포지션값 변경
+    //                         childNPC.position = _lineArea[i - 1].position;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         else
+    //         {
+    //             _lineAreaHasChild[i] = false;
+    //         }
+    //     }
+    // }
     public void CheckLineAreaChildren()
+{
+    for (int i = 0; i < _lineArea.Count; i++)
     {
-        for (int i = 0; i < _lineArea.Count; i++)
+        LineArea lineArea = _lineArea[i].GetComponent<LineArea>();
+        if (lineArea.HasChildren())
         {
-            LineArea lineArea = _lineArea[i].GetComponent<LineArea>();
-            if (lineArea.HasChildren())
+            Debug.Log(_lineArea[i].name);
+            _lineAreaHasChild[i] = true;
+
+            if (i > 0)
             {
-                // LineArea에 자식이 추가되었음을 감지
-                Debug.Log("LineArea에 자식이 추가");
-                Debug.Log(_lineArea[i].name);
+                Transform previousLineArea = _lineArea[i - 1];
+                Transform currentLineArea = _lineArea[i];
 
-                _lineAreaHasChild[i] = true;
-
-                // 이전 LineArea에서 NPC를 가져와서 현재 LineArea로 이동시킴
-                if (i > 0)
+                if (previousLineArea.childCount > 0)
                 {
-                    Transform previousLineArea = _lineArea[i];
-                    if (previousLineArea.childCount > 0)
-                    {
-                        Transform childNPC = previousLineArea.GetChild(0);
-                        childNPC.position = _lineArea[i].position;
-                        childNPC.parent = _lineArea[i];
+                    Transform childNPC = previousLineArea.GetChild(0);
 
-                        // 첫 번째 LineArea의 자식이 없어지면 두 번째 LineArea의 자식을 첫 번째 LineArea의 자식으로 이동하지 않도록 처리
-                        if (i == 1 && !_lineAreaHasChild[0])
-                        {
-                            Debug.Log("첫번째 자식 체크");
-                            // 옮겨주고
-                            childNPC.parent = _lineArea[i - 1];
-                            // 포지션값 변경
-                            childNPC.position = _lineArea[i - 1].position;
-                        }
+                    if (!_lineAreaHasChild[i - 1])
+                    {
+                        // 첫 번째 LineArea의 자식이 없어지면 두 번째 LineArea의 자식을 첫 번째 LineArea의 자식으로 이동
+                        childNPC.position = currentLineArea.position;
+                        childNPC.parent = currentLineArea;
+                    }
+                    else
+                    {
+                        // 첫 번째 LineArea의 자식이 아직 있을 경우 두 번째 자식으로 보내지 않고 다시 첫 번째 LineArea로 돌려보냄
+                        childNPC.position = previousLineArea.position;
+                        childNPC.parent = previousLineArea;
                     }
                 }
             }
-            else
-            {
-                _lineAreaHasChild[i] = false;
-            }
+        }
+        else
+        {
+            _lineAreaHasChild[i] = false;
         }
     }
+}
 
     public Transform FindAvailableLineArea()
     {
@@ -121,4 +152,5 @@ public class LineUpController : MonoBehaviour
         _lineArea.RemoveAt(index);
         _lineAreaHasChild.RemoveAt(index);
     }
+    
 }

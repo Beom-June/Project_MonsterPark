@@ -27,8 +27,6 @@ public class ObjectPile : MonoBehaviour
                 _npcBuyer.Add(buyerController);
             }
         }
-        Debug.Log(buyerController != null);
-
     }
 
     // 쌓는 코루틴

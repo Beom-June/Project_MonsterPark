@@ -23,28 +23,29 @@ public static class ListExtensions
 
 public class SafariNpcController : MonoBehaviour
 {
-    [SerializeField] private List<Transform> _wayPoints;  // Safari Npc가 움직이는 경로
-    [SerializeField] private float _speed;  // 이동 속도
-
+    [SerializeField] private List<Transform> _wayPoints;                        //  Safari Npc가 움직이는 경로
+    [SerializeField] private float _speed;                            //  이동 속도
     private Animator _animatorSafariNpc;
     private Rigidbody _rigidSafariNpc;
-    private int _currentWaypointIndex;  // 현재 도달한 웨이포인트의 인덱스를 저장
-    private List<int> _randomIndices = new List<int>();  // 첫 번째 포인트에서 방문할 랜덤한 인덱스들을 저장하는 리스트
-    private int _visitedCount;  // 방문한 중간 지점의 개수
+    private SafariNpcController _previousNpc;                      //  이전 NPC
 
-    private SafariNpcController _previousNpc;  // 이전 NPC
+    // 웨이포인트 순항시 필요
+    private int _currentWaypointIndex;             //  현재 도달한 웨이포인트의 인덱스를 저장
+    private int _visitedCount;                                                  //  방문한 중간 지점의 개수
+    [SerializeField] private float _waitTime = 10.0f;                           //  대기 시간
+    private bool _isWaiting;                                                    //  대기 중인지 여부
+    private float _waitTimer;                                                   //  대기 타이머
 
-    [SerializeField] private float _waitTime = 3.0f;  // 대기 시간
-    private bool _isWaiting;  // 대기 중인지 여부
-    private float _waitTimer;  // 대기 타이머
+    // 줄서기 관련
+    [SerializeField] private bool _reachedFirstChild;                           //  0번째 인덱스의 자식 오브젝트에 도달했는지 여부를 나타내는 변수
+    LineArea _lineArea;
+    private Transform _destination;                                             //  목적지를 저장하는 변수
 
-
-
-    [SerializeField]private bool _istest = false;
     void Start()
     {
         _animatorSafariNpc = GetComponent<Animator>();
         _rigidSafariNpc = GetComponent<Rigidbody>();
+        _lineArea = FindObjectOfType<LineArea>();
 
         // 이전 NPC 가져오기
         SafariNpcController[] npcControllers = FindObjectsOfType<SafariNpcController>();
@@ -53,44 +54,57 @@ public class SafariNpcController : MonoBehaviour
         {
             _previousNpc = npcControllers[index - 1];
         }
+        StartCoroutine(WaitAtFirstWaypoint(_waitTime));
     }
 
     void Update()
     {
-
+        SafariNpcWaypoint();
     }
 
     private void SafariNpcWaypoint()
     {
-        // 첫 번째 NPC가 멈추고 있으면 대기
-        if (_currentWaypointIndex == 0 && _previousNpc != null && !_previousNpc.IsMoving())
+        if (_currentWaypointIndex >= _wayPoints.Count)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if (_isWaiting)
         {
             _animatorSafariNpc.SetFloat("isWalk", 0f);
 
-            if (!_isWaiting)
+            _waitTimer -= Time.deltaTime;
+            if (_waitTimer <= 0f)
             {
-                _isWaiting = true;
-                _waitTimer = _waitTime;
-            }
-            else
-            {
-                _waitTimer -= Time.deltaTime;
-                if (_waitTimer <= 0f)
-                {
-                    _currentWaypointIndex++;
-                    _isWaiting = false;
-                }
+                _currentWaypointIndex++;
+                _isWaiting = false;
+                _animatorSafariNpc.SetFloat("isWalk", 1f);
             }
             return;
         }
 
-        Vector3 destination = _wayPoints[_currentWaypointIndex].transform.position;
-        Vector3 newPos = Vector3.MoveTowards(transform.position, destination, _speed * Time.deltaTime);
+        if (_currentWaypointIndex == 0 && !_reachedFirstChild)
+        {
+            // 0번째 인덱스의 자식 오브젝트로 이동
+            _destination = _wayPoints[_currentWaypointIndex].GetChild(0);
+            if (transform.position == _destination.position)
+            {
+                _reachedFirstChild = true;
+            }
+        }
+        else
+        {
+            // 1번째 인덱스부터 순서대로 이동
+            _destination = _wayPoints[_currentWaypointIndex];
+        }
+
+        Vector3 newPos = Vector3.MoveTowards(transform.position, _destination.position, _speed * Time.deltaTime);
         transform.position = newPos;
         _animatorSafariNpc.SetFloat("isWalk", 1f);
 
         // NPC가 이동 시 바라보는 방향
-        Vector3 lookDirection = destination - transform.position;
+        Vector3 lookDirection = _destination.position - transform.position;
         lookDirection.y = 0f; // 수직 방향은 고려하지 않음
         if (lookDirection != Vector3.zero)
         {
@@ -98,17 +112,13 @@ public class SafariNpcController : MonoBehaviour
             transform.rotation = lookRotation;
         }
 
-        float distance = Vector3.Distance(transform.position, destination);
+        float distance = Vector3.Distance(transform.position, _destination.position);
         if (distance <= 0.05f)
         {
-            if (_currentWaypointIndex == _wayPoints.Count - 1)
+            if (_currentWaypointIndex == 0)
             {
-                Destroy(gameObject);
-                return;
-            }
-            else if (_currentWaypointIndex == 0)
-            {
-                _currentWaypointIndex++;
+                _isWaiting = true;
+                _waitTimer = _waitTime;
             }
             else if (_currentWaypointIndex < _wayPoints.Count - 1)
             {
@@ -123,6 +133,7 @@ public class SafariNpcController : MonoBehaviour
                     _currentWaypointIndex = _wayPoints.Count - 1;
                 }
             }
+
         }
     }
 
@@ -134,7 +145,6 @@ public class SafariNpcController : MonoBehaviour
         {
             randomIndices.Add(i);
         }
-
         randomIndices.Shuffle();
         return randomIndices;
     }
@@ -144,10 +154,9 @@ public class SafariNpcController : MonoBehaviour
         return _animatorSafariNpc.GetFloat("isWalk") > 0f;
     }
 
-    private void OnTriggerEnter(Collider collider)
+    private IEnumerator WaitAtFirstWaypoint(float _time)
     {
-        if (collider.CompareTag("LineArea"))
-        {
-        }
+        yield return new WaitForSeconds(_time);
+        _currentWaypointIndex++;
     }
 }
