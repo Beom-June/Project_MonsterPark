@@ -38,13 +38,11 @@ public class GameManager : MonoBehaviour
 
         // 레벨 업 처리
         pm.Level = nextLevel;
-        Debug.Log("Level Up! Current Level: " + nextLevel);
         levelUp.Invoke(nextLevel);
     }
 
     public void OpenFence()
     {
-        Debug.Log("Open Fence " + fenceIdx);
         fenceIdx++;
         fences[fenceIdx].gameObject.SetActive(true);
     }

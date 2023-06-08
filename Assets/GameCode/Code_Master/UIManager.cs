@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
 
     public static UIManager instance = null;
 
-    PlayerSensor playerSensorCtr;    
+    PlayerSensorMaster playerSensorCtr;    
 
     [Header("Monster UI")] //���� ��� UI
     [SerializeField] private Sprite[] monsTexture = new Sprite[5];
@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        playerSensorCtr = PlayerSensor.instance;
+        playerSensorCtr = PlayerSensorMaster.instance;
         pm = PlayerManager.instance;
         gm = GameManager.instance;
 

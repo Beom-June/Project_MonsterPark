@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using EnumTypes;
+using Unity.VisualScripting;
 
 public class MoneyPile : MonoBehaviour
 {
@@ -13,7 +15,16 @@ public class MoneyPile : MonoBehaviour
     [SerializeField] private float _objectSpacing = 1.0f;                                             //  오브젝트간의 간격
     [SerializeField] private List<GameObject> spawnedObjects; // 생성된 오브젝트를 추적하기 위한 리스트
 
+    [SerializeField] private int money = 400;
+    [SerializeField] private Text moneyText;
     // 쌓는 코루틴
+
+    private PlayerManager pm;
+
+    private void Start()
+    {
+        pm = PlayerManager.instance;
+    }
     private IEnumerator GenerateObjects(int _level)
     {
         int totalLevels = Mathf.CeilToInt((float)_maxObjects / (_rows * _columns)); // 총 레벨 수 계산
@@ -55,7 +66,16 @@ public class MoneyPile : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
+        
         // 코루틴이 완료되었을 때 필요한 작업을 수행. 고객 npc 퇴장
+
+        moneyText.text = $"${money}";
+        moneyText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);        
+        moneyText.gameObject.SetActive(false);
+
+        pm.money += money;
+        money = 0;
     }
 
     private void OnTriggerEnter(Collider collider)

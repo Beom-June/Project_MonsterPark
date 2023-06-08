@@ -12,6 +12,12 @@ namespace BrokenVector.LowPolyFencePack
 	public class DoorToggle : MonoBehaviour
     {
 
+	    [SerializeField] private bool isOutDoor = false; // 바깥쪽 문인지 
+	    
+	    [Header("Player")]
+	    [SerializeField] private Animator anim;
+	    [SerializeField] private GameObject cap;
+
         private DoorController doorController;
 
         void Awake()
@@ -27,6 +33,15 @@ namespace BrokenVector.LowPolyFencePack
 		    if (triggerObject.CompareTag(TagType.Player.ToString()))
 		    {
 			    doorController.OpenDoor();
+
+			    if (isOutDoor)
+			    {
+				    if (!cap.activeSelf)
+				    {
+					    anim.SetTrigger(AnimType.Change.ToString());
+					    cap.SetActive(true);
+				    }
+			    }
 		    }
 	    }
 	    
@@ -39,7 +54,14 @@ namespace BrokenVector.LowPolyFencePack
 		    {
 			    doorController.CloseDoor();
 
+			    if (!isOutDoor)
+			    {
+				    if (cap.activeSelf)
+				    {
+					    cap.SetActive(false);
+				    }
+			    }
 		    }
 	    }
-	}
+    }
 }

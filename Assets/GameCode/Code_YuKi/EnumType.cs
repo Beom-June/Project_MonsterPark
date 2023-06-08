@@ -19,6 +19,8 @@ namespace  EnumTypes
     {
         activate,
         isWalk,
+        isThink,
+        Change,
     }
 
     public enum PlayerStateType
@@ -32,6 +34,16 @@ namespace  EnumTypes
         Disable,
         NotOpen,
         Open,
+    }
+
+    public enum CustomerStateType
+    {
+        Disable,
+        Entry, // 입장
+        Watching, // 구경
+        Standby, // 대기
+        Calculation, // 계산
+        Out, // 나감
     }
     
 }

@@ -47,7 +47,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8451633260166429609}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -249,9 +249,9 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 122
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!136 &9023013449064183909
 CapsuleCollider:
@@ -298,7 +298,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4cbf86a9c18b44aa3c404e11832f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _outPoint: {fileID: 0}
+  customerState: 1
+  beforeCustomerState: 0
+  _fence: {fileID: 0}
+  _counter: {fileID: 6063022658928693315, guid: daf49c7e2dc31c348b5266bc4b68b3ff, type: 3}
+  _outPoint: {fileID: 6280885107309313686, guid: b30828785255aa449a8797a1a5d008a5, type: 3}
   _isExitScene: 0
   _moveSpeed: 5
 --- !u!1 &9023013449103389571

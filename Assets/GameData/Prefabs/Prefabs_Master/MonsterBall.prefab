@@ -93,7 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7888861148783331771}
-  - component: {fileID: 1187697256110155122}
+  - component: {fileID: 6792072515958874237}
   m_Layer: 0
   m_Name: MonsterBall
   m_TagString: Untagged
@@ -117,7 +117,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1187697256110155122
+--- !u!114 &6792072515958874237
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,10 +126,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7363682011613762305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a8e874f8743046f0a45f5963dbf40b0, type: 3}
+  m_Script: {fileID: 11500000, guid: d83864ff32307814ea737368c91ef2da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isHaveMonster: 0
+  isCatchMonster: 0
   createPariclePrefab: {fileID: 1247311384876784, guid: accde915167414aebba10d98c9e23e31, type: 3}
   bazierSpeed: 0.75
 --- !u!1 &7615323887071249040

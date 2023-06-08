@@ -124,7 +124,7 @@ public class PlayerManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision other) 
     {
-        if (other.collider.gameObject.CompareTag(TagType.Player.ToString()) && !isGetMoney)
+        if (other.collider.gameObject.CompareTag(TagType.Money.ToString()) && !isGetMoney)
         {
             Debug.Log("Get Money");
             StartCoroutine(stackMoney.RemoveObjects());

@@ -42,22 +42,22 @@ public class Fence : MonoBehaviour
     [SerializeField] float wallMoveDuration = 1.5f;
     [SerializeField] GameObject nextFence;
 
-    [SerializeField] CameraController cameraController;
+    // [SerializeField] CameraController cameraController;
     [SerializeField] Camera cam;
 
     private void Start() 
     {
         moneyText.text = price.ToString();    
-        cameraController = FindObjectOfType<CameraController>();
-
-        if (!fences.activeSelf && !canvases.activeSelf)
-        {
-            cameraController.SetNewCamTransform(cam.transform);
-            Debug.Log(gameObject.name);
-            canvases.SetActive(true);
-            cameraController.isMove = true;
-        }
-        
+        // cameraController = FindObjectOfType<CameraController>();
+        //
+        // if (!fences.activeSelf && !canvases.activeSelf)
+        // {
+        //     cameraController.SetNewCamTransform(cam.transform);
+        //     Debug.Log(gameObject.name);
+        //     canvases.SetActive(true);
+        //     cameraController.isMove = true;
+        // }
+        //
     }
 
     // [SerializeField]
