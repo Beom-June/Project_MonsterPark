@@ -78,21 +78,21 @@ namespace Player
                     case MonsterKind.TWO:
                         if(monsCount[(int)MonsterKind.TWO] != 0)
                         {
-                            
+                            StartCoroutine(CreateMonBall((int)MonsterKind.TWO, fenceCtr));
                         }
                         break;
 
                     case MonsterKind.THREE:
                         if(monsCount[(int)MonsterKind.THREE] != 0)
                         {
-
+                            StartCoroutine(CreateMonBall((int)MonsterKind.THREE, fenceCtr));
                         }
                         break;
 
                     case MonsterKind.FOUR:
                         if(monsCount[(int)MonsterKind.FOUR] != 0)
                         {
-
+                            StartCoroutine(CreateMonBall((int)MonsterKind.FOUR, fenceCtr));
                         }
                         break;
                 }

@@ -25,7 +25,7 @@ namespace  EnumTypes
         Sell,
     }
 
-    public enum AreaStateType
+    public enum FenceStateType
     {
         Disable,
         NotOpen,
