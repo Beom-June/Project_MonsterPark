@@ -40,15 +40,7 @@ public class PlayerController : MonoBehaviour
         PlayerInput();
         PlayerMove();
         PlayerTurn();
-
-        //GameObject[] npcObjects = GameObject.FindGameObjectsWithTag("NPC");
-        //foreach (GameObject npcObject in npcObjects)
-        //{
-        //     bezierCurves = npcObject.GetComponent<MoneyBezierCurves>();
-
-        //}
     }
-
 
     // Input
     private void PlayerInput()

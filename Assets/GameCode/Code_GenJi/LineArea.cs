@@ -20,7 +20,7 @@ public class LineArea : MonoBehaviour
         _lineUpController = GetComponentInParent<LineUpController>(); // 부모에 있는 LineUpController 스크립트의 참조를 가져옴
     }
     // 충돌시 NPC를 체크함
-    private void OnTriggerEnter(Collider collider)
+    private void OnTriggerStay(Collider collider)
     {
         if (collider.CompareTag("NPC") && !_hasChild)
         {
@@ -51,7 +51,6 @@ public class LineArea : MonoBehaviour
     // 자식이 제거될 때 호출됨
     private void OnTransformChildrenChanged()
     {
-        // 자식이 변경되었을 때 디버그 출력
         // Debug.Log("LineArea에 자식이 변경됨");
 
         // 자식이 삭제되었는지 체크

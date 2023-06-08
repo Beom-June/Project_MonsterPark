@@ -27,19 +27,26 @@ public class SafariNpcController : MonoBehaviour
     [SerializeField] private float _speed;                            //  이동 속도
     private Animator _animatorSafariNpc;
     private Rigidbody _rigidSafariNpc;
-    private SafariNpcController _previousNpc;                      //  이전 NPC
 
     // 웨이포인트 순항시 필요
     private int _currentWaypointIndex;             //  현재 도달한 웨이포인트의 인덱스를 저장
     private int _visitedCount;                                                  //  방문한 중간 지점의 개수
     [SerializeField] private float _waitTime = 10.0f;                           //  대기 시간
-    private bool _isWaiting;                                                    //  대기 중인지 여부
-    private float _waitTimer;                                                   //  대기 타이머
+    [SerializeField] private bool _isWaiting;                                                    //  대기 중인지 여부
+    [SerializeField] private float _waitTimer;                                                   //  대기 타이머
 
     // 줄서기 관련
     [SerializeField] private bool _reachedFirstChild;                           //  0번째 인덱스의 자식 오브젝트에 도달했는지 여부를 나타내는 변수
     LineArea _lineArea;
     private Transform _destination;                                             //  목적지를 저장하는 변수
+
+    #region Property
+    public bool _isNpcWaitingTime
+    {
+        get {return _isWaiting;}
+        set{_isWaiting = value;}
+    }
+    #endregion
 
     void Start()
     {
@@ -47,14 +54,9 @@ public class SafariNpcController : MonoBehaviour
         _rigidSafariNpc = GetComponent<Rigidbody>();
         _lineArea = FindObjectOfType<LineArea>();
 
-        // 이전 NPC 가져오기
-        SafariNpcController[] npcControllers = FindObjectsOfType<SafariNpcController>();
-        int index = Array.IndexOf(npcControllers, this);
-        if (index > 0)
-        {
-            _previousNpc = npcControllers[index - 1];
-        }
-        StartCoroutine(WaitAtFirstWaypoint(_waitTime));
+
+        // StartCoroutine(WaitAtFirstWaypoint(_waitTime));
+
     }
 
     void Update()
@@ -86,11 +88,15 @@ public class SafariNpcController : MonoBehaviour
 
         if (_currentWaypointIndex == 0 && !_reachedFirstChild)
         {
-            // 0번째 인덱스의 자식 오브젝트로 이동
-            _destination = _wayPoints[_currentWaypointIndex].GetChild(0);
-            if (transform.position == _destination.position)
+            Transform firstChild = GetFirstChildWithNoChildren(_wayPoints[_currentWaypointIndex]);
+            if (firstChild != null)
             {
-                _reachedFirstChild = true;
+                _destination = firstChild;
+                if (transform.position == _destination.position)
+                {
+                    _reachedFirstChild = true;
+                    _isWaiting = true;
+                }
             }
         }
         else
@@ -98,6 +104,7 @@ public class SafariNpcController : MonoBehaviour
             // 1번째 인덱스부터 순서대로 이동
             _destination = _wayPoints[_currentWaypointIndex];
         }
+        
 
         Vector3 newPos = Vector3.MoveTowards(transform.position, _destination.position, _speed * Time.deltaTime);
         transform.position = newPos;
@@ -136,6 +143,18 @@ public class SafariNpcController : MonoBehaviour
 
         }
     }
+    private Transform GetFirstChildWithNoChildren(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            LineArea lineArea = child.GetComponent<LineArea>();
+            if (lineArea != null && !lineArea.HasChildren())
+            {
+                return child;
+            }
+        }
+        return null;
+    }
 
     private List<int> GetRandomIndices()
     {
@@ -154,7 +173,7 @@ public class SafariNpcController : MonoBehaviour
         return _animatorSafariNpc.GetFloat("isWalk") > 0f;
     }
 
-    private IEnumerator WaitAtFirstWaypoint(float _time)
+    public IEnumerator WaitAtFirstWaypoint(float _time)
     {
         yield return new WaitForSeconds(_time);
         _currentWaypointIndex++;

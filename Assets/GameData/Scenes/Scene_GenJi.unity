@@ -732,6 +732,8 @@ MonoBehaviour:
   - {fileID: 1998932378}
   _speed: 2
   _waitTime: 10
+  _isWaiting: 0
+  _waitTimer: 0
   _reachedFirstChild: 0
 --- !u!136 &181060068
 CapsuleCollider:
@@ -1776,7 +1778,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &486000206
 Transform:
   m_ObjectHideFlags: 0
@@ -3889,6 +3891,8 @@ MonoBehaviour:
   - {fileID: 1998932378}
   _speed: 4
   _waitTime: 10
+  _isWaiting: 0
+  _waitTimer: 0
   _reachedFirstChild: 0
 --- !u!136 &1061822332
 CapsuleCollider:
@@ -4015,7 +4019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1080105024
 Transform:
   m_ObjectHideFlags: 0
@@ -5396,6 +5400,7 @@ MonoBehaviour:
   - {fileID: 693925720}
   - {fileID: 568546562}
   _lineAreaHasChild: 
+  _safariNpcList: []
 --- !u!1 &1611835065
 GameObject:
   m_ObjectHideFlags: 0
