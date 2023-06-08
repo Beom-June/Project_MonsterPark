@@ -24,5 +24,12 @@ namespace  EnumTypes
         None,
         Sell,
     }
+
+    public enum AreaStateType
+    {
+        Disable,
+        NotOpen,
+        Open,
+    }
     
 }
