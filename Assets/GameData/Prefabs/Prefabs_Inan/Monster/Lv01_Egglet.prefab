@@ -539,6 +539,7 @@ MonoBehaviour:
   closestRenderer: {fileID: 0}
   movementSpeed: 3
   idleMoveTime: 100
+  levelObj: {fileID: 0}
   scaleDownTime: 0.5
   rotSeepd: 1000
 --- !u!135 &5764628602642138734

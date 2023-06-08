@@ -10,6 +10,9 @@ namespace Player
     {
         static public PlayerSensor instance = null;
 
+        [SerializeField] private int level = 1;
+        [SerializeField] private int money = 10000;
+
         [SerializeField] float detectionAngle = 45f;  // ???? ????
         [SerializeField] float detectionRange = 5f;   // ???? ????
         [SerializeField] LayerMask targetLayer;       // ?????? ?????
@@ -85,8 +88,13 @@ namespace Player
 
                 if (monCtr != null)
                 {
-                    MonsterBallMarkerDeactive();
-                    monCtr.SetIsPlayerChase(false);
+                    if (!monCtr.GetLevelLock())
+                    {
+                        MonsterBallMarkerDeactive();
+                        monCtr.SetIsPlayerChase(false);
+                    }
+                    
+                    monCtr.SetLevelLock();
                     monCtr = null;
                     detected = false;
                 }
@@ -96,8 +104,8 @@ namespace Player
                 float closestDistance = Mathf.Infinity;
                 foreach (Collider target in targets)
                 {
-                    Vector3 directionToTarget = target.transform.position - transform.position; //target???? ???
-                    float angle = Vector3.Angle(transform.forward, directionToTarget); // ?????? ????
+                    Vector3 directionToTarget = target.transform.position - transform.position;
+                    float angle = Vector3.Angle(transform.forward, directionToTarget); 
 
                     if (angle <= detectionAngle * 0.5f)
                     {
@@ -110,7 +118,6 @@ namespace Player
                         }
                         anim.SetLayerWeight(1, time);
 
-                        // ???? ????? ????? ???? ????
                         if (distanceToTarget < closestDistance && !detected)
                         {
                             monCtr = target.GetComponent<MonsterController>();
@@ -130,10 +137,16 @@ namespace Player
                                 }
                                 anim.SetLayerWeight(1, time);
 
-                                MonsterBallMarkerDeactive();
-                                monCtr.SetIsPlayerChase(false);
+                                if(!monCtr.GetLevelLock())
+                                {
+                                    MonsterBallMarkerDeactive();
+                                    monCtr.SetIsPlayerChase(false);
+                                    detected = false;
+                                }
+       
+                                monCtr.SetLevelLock();
                                 monCtr = null;
-                                detected = false;
+                                
                             }
                         }
 
@@ -144,10 +157,15 @@ namespace Player
 
                 if (monCtr != null)
                 {
-                    monCtr.SetIsPlayerChase(true);
-                    MonsterBallMarkerShoot();
-                    Debug.Log("???? ????");
-                    detected = true;
+                    monCtr.CheckLevelLock(level);
+                    if (!monCtr.GetLevelLock())
+                    {
+                        monCtr.SetIsPlayerChase(true);
+                        MonsterBallMarkerShoot();
+                        Debug.Log("추격 시작");
+                        detected = true;
+                    }
+                  
                 }
             }
 
@@ -220,7 +238,7 @@ namespace Player
 
         private void OnDrawGizmos()
         {
-            // ???? ?????? ?��??????? ???
+            // ???? ?????? ?��??????? ???
             Gizmos.color = color;
             Quaternion leftRayRotation = Quaternion.AngleAxis(-detectionAngle * 0.5f, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(detectionAngle * 0.5f, Vector3.up);
@@ -234,6 +252,16 @@ namespace Player
             Gizmos.DrawRay(transform.position, transform.right * detectionRange);
             Gizmos.DrawRay(transform.position, -transform.right * detectionRange);
             Gizmos.DrawWireSphere(transform.position, detectionRange);
+        }
+
+        public int GetPlayerLevel()
+        {   
+            return level; 
+        }
+
+         public int GetPlayerMoney()
+        {   
+            return money; 
         }
     }
 

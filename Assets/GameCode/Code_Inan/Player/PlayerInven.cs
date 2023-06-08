@@ -8,7 +8,7 @@ namespace Player
     public class PlayerInven : MonoBehaviour
     {
         public static PlayerInven instance = null;
-        UIManager gmr;
+        UIManager_Inan gmr;
         int[] monsCount = new int[5];
         [SerializeField] private GameObject[] monsObj = new GameObject[5];
 
@@ -33,7 +33,7 @@ namespace Player
 
         private void Start()
         {
-            gmr = UIManager.instance;
+            gmr = UIManager_Inan.instance;
             itemCnt = 0;
             maxItemCnt = 5;
         }

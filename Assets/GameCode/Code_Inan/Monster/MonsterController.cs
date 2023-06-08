@@ -38,6 +38,12 @@ namespace Monster
 
         private float idleT = 0f;
         private float idleTimer = 2f;
+
+//Level diffrent Event
+        [SerializeField] private GameObject levelObj;
+        private bool isLock;
+        private int monLevel;
+        private int playerLevel;
         
 
 
@@ -52,6 +58,7 @@ namespace Monster
 
         private bool isGrabbed = false;
         private bool isPlayerChase = false;
+
         
         private void Awake()
         {
@@ -67,6 +74,25 @@ namespace Monster
             playerCtr = PlayerController_Inan.instance; // 코드 충돌 조심
             currentScale = this.transform.localScale;
             
+            switch(monsterKind)
+            {
+                case MonsterKind.ONE:
+                    monLevel = 1;
+                    break;
+                case MonsterKind.TWO:
+                    monLevel = 2;
+                    break;
+                case MonsterKind.THREE:
+                    monLevel = 3;
+                    break;
+                case MonsterKind.FOUR:
+                    monLevel = 4;
+                    break;
+                case MonsterKind.FIVE:
+                    monLevel = 5;
+                    break;
+            }
+
             SetRandomTargetPosition();
             agent.SetDestination(targetPosition);
 
@@ -117,7 +143,7 @@ namespace Monster
         {
             while (!isGrabbed)
             {
-                if (isPlayerChase)
+                if (isPlayerChase && !isLock)
                 {
                     monsterState = MonsterState.ESCAPE;
                     if (hpBarImg.fillAmount <= 0.0f)
@@ -152,7 +178,7 @@ namespace Monster
                         break;
 
                     case MonsterState.WALK:
-                    
+
                         agent.isStopped = false;
                         agent.speed = 3f;
                         anim.SetBool(hashWalk, true);
@@ -181,10 +207,8 @@ namespace Monster
                      
                         currentPosition = this.transform.position;
                         hpObj.SetActive(true);
-
-          
-
                         break;
+
                     case MonsterState.GRABBED:
                         isGrabbed = true;
                         hpObj.SetActive(false);
@@ -229,6 +253,26 @@ namespace Monster
         public void SetIsPlayerChase(bool _isPlayerChase)
         {
             this.isPlayerChase = _isPlayerChase;
+        }
+
+        public void CheckLevelLock(int _playerLevel)
+        {
+            if(monLevel > _playerLevel)
+            {   
+                isLock = true;
+                levelObj.SetActive(true);
+            }
+        }
+
+        public void SetLevelLock()
+        {
+            isLock = false;
+            levelObj.SetActive(false);
+        }
+
+        public bool GetLevelLock()
+        {
+            return isLock;
         }
 
         public bool GetIsPlayerChase()
