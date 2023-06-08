@@ -80,7 +80,7 @@ public class Money : MonoBehaviour
         float tt = t * t;
         float uu = u * u;
 
-        Vector3 _position = (uu * _startPoint) + (4f * u * t * _controlPoint) + (tt * _endPoint);
+        Vector3 _position = (uu * _startPoint) + (2f * u * t * _controlPoint) + (tt * _endPoint);
 
         return _position;
     }

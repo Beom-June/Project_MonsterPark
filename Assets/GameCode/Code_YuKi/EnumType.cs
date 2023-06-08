@@ -9,14 +9,16 @@ namespace  EnumTypes
         Player, 
         NPC,
         Counter,
+        Money,
         MoneyPoint,
         Fence,
+        NotOpenFence
     }
 
     public enum AnimType
     {
         activate,
-
+        isWalk,
     }
 
     public enum PlayerStateType

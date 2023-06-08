@@ -8,6 +8,8 @@ public class PlayerManager : MonoBehaviour
 
     public static PlayerManager instance = null;
 
+    public delegate void PayMoney(int money);
+    public PayMoney payMoney;
 
     [Header("Level")]
     [SerializeField] private int level = 0;
@@ -23,11 +25,17 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Money")]
     public int money = 100;
-    private Money moneyController;
+    [SerializeField] MoneyPile stackMoney;
+    private bool isGetMoney = false;
     private FenceManager fm; // 현재 닿아있는 펜스 
 
+    private Money moneyController; // 플레이어의 돈 
+    public bool isInCounter = false; // 카운터에 있는지
+
+    
     [Header("Monster")]
     public int maxItemCnt = 5; // 잡을 수 있는 몬스터 수
+    
 
     private void Awake()
     {
@@ -42,7 +50,6 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         moneyController = GetComponent<Money>();
-
     }
 
     // Update is called once per frame
@@ -55,11 +62,14 @@ public class PlayerManager : MonoBehaviour
     {
         GameObject triggerObject = other.gameObject;
 
-        if (triggerObject.CompareTag(TagType.Fence.ToString()))
+        if (triggerObject.CompareTag(TagType.NotOpenFence.ToString()))
         {
             // 현재 닿아있는 펜스 설정
             fm = triggerObject.GetComponent<FenceManager>();
-            
+        }
+        else if (triggerObject.CompareTag(TagType.MoneyPoint.ToString()))
+        {
+            isInCounter = true;
         }
     }
     
@@ -68,7 +78,7 @@ public class PlayerManager : MonoBehaviour
     {
         GameObject triggerObject = other.gameObject;
 
-        if (triggerObject.CompareTag(TagType.Fence.ToString()))
+        if (triggerObject.CompareTag(TagType.NotOpenFence.ToString()))
         {
 
             if (fm != null)
@@ -102,23 +112,23 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    // private void OnTriggerExit(Collider other) 
-    // {
-    //      GameObject triggerObject = other.gameObject;
+    private void OnTriggerExit(Collider other) 
+    {
+         GameObject triggerObject = other.gameObject;
 
-    //     if (triggerObject.CompareTag(TagType.Fence.ToString()))
-    //     {
-    //         if (fm != null)
-    //         {
-    //             // 열리지 않았다면
-    //             if (fm.fenceState == FenceStateType.NotOpen)
-    //             {  
-    //                 fm.NotOpenTrigger(false);
+         if (triggerObject.CompareTag(TagType.MoneyPoint.ToString()))
+        {
+            isInCounter = false;
+        }
+    }
 
-    //             }
-    //         }
-
-    //     }
-    // }
-
+    private void OnCollisionEnter(Collision other) 
+    {
+        if (other.collider.gameObject.CompareTag(TagType.Player.ToString()) && !isGetMoney)
+        {
+            Debug.Log("Get Money");
+            StartCoroutine(stackMoney.RemoveObjects());
+            isGetMoney = true;
+        }    
+    }
 }

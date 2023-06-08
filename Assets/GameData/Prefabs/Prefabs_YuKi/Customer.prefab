@@ -408,6 +408,7 @@ GameObject:
   - component: {fileID: 5616161535547766772}
   - component: {fileID: 5616161535547766773}
   - component: {fileID: 5910543420439023332}
+  - component: {fileID: 2685189404493494648}
   m_Layer: 0
   m_Name: Player_Rig
   m_TagString: NPC
@@ -513,6 +514,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4cbf86a9c18b44aa3c404e11832f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2685189404493494648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5616161535547766768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba3eb970962206a4e9d93a9b93813b08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outPoint: {fileID: 0}
+  _isExitScene: 0
+  _moveSpeed: 5
 --- !u!1 &5616161535612330451
 GameObject:
   m_ObjectHideFlags: 0

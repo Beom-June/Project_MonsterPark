@@ -11,6 +11,7 @@ TagManager:
   - Fence
   - NPC
   - LineArea
+  - NotOpenFence
   layers:
   - Default
   - TransparentFX
