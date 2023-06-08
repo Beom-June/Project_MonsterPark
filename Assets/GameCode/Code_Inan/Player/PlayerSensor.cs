@@ -45,8 +45,6 @@ namespace Player
             lr = GetComponent<LineRenderer>();
             playerCtr = GetComponent<PlayerController_Inan>();
 
-
-            
         }
 
         private void Start()
@@ -59,15 +57,15 @@ namespace Player
 
         private void Update()
         {
-            // ????? ????? ????
+       
             Collider[] targets = Physics.OverlapSphere(transform.position, detectionRange, targetLayer);
-            bool isTargetDetected = targets.Length > 0; // ????? ??????????? ???? ???
+            bool isTargetDetected = targets.Length > 0;
 
-            //?????? ??
             if (monCtr != null)
             {
                 if (monCtr.GetMonsterIsGrabbed())
                 {
+                    //GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
                     anim.SetLayerWeight(1, time);
 
                     MonsterBallMarkerDeactive();
@@ -76,8 +74,6 @@ namespace Player
                 }
             }
 
-   
-            //???? ????? ??
             if (!isTargetDetected)
             {
                 if (time >= 0)
@@ -88,12 +84,12 @@ namespace Player
 
                 if (monCtr != null)
                 {
+                    monCtr.CheckLevelLock(level);
                     if (!monCtr.GetLevelLock())
                     {
                         MonsterBallMarkerDeactive();
                         monCtr.SetIsPlayerChase(false);
                     }
-                    
                     monCtr.SetLevelLock();
                     monCtr = null;
                     detected = false;
@@ -137,13 +133,10 @@ namespace Player
                                 }
                                 anim.SetLayerWeight(1, time);
 
-                                if(!monCtr.GetLevelLock())
-                                {
-                                    MonsterBallMarkerDeactive();
-                                    monCtr.SetIsPlayerChase(false);
-                                    detected = false;
-                                }
-       
+                                MonsterBallMarkerDeactive();
+                                monCtr.SetIsPlayerChase(false);
+                                detected = false;
+
                                 monCtr.SetLevelLock();
                                 monCtr = null;
                                 
@@ -165,13 +158,12 @@ namespace Player
                         Debug.Log("추격 시작");
                         detected = true;
                     }
-                  
+            
                 }
             }
 
         }
 
-        //????? ???? Set
         void MonsterBallMarkerShoot()
         {
             monsterballTr = playerCtr.GetMonsterBallPos();
@@ -182,7 +174,7 @@ namespace Player
             lr.SetPosition(1, monCtr.transform.position);
         }
 
-        //????? ???? ????
+
         void MonsterBallMarkerDeactive()
         {
             lr.SetPosition(0, Vector3.zero);
@@ -238,7 +230,6 @@ namespace Player
 
         private void OnDrawGizmos()
         {
-            // ???? ?????? ?��??????? ???
             Gizmos.color = color;
             Quaternion leftRayRotation = Quaternion.AngleAxis(-detectionAngle * 0.5f, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(detectionAngle * 0.5f, Vector3.up);

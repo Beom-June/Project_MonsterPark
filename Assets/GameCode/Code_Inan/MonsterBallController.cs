@@ -6,6 +6,7 @@ public class MonsterBallController : MonoBehaviour
 {
     //-----배지어
     [SerializeField] private bool isHaveMonster = false;
+    [SerializeField] private bool isCatchMonster = false;
     [SerializeField] private GameObject createPariclePrefab;
     private float time = 0.0f;
     private float t = 0.0f;
@@ -41,14 +42,32 @@ public class MonsterBallController : MonoBehaviour
             else
             {
                 GameObject monObj = Instantiate(monPrefab, transform.position, Quaternion.identity);
-                GameObject createParicle = Instantiate(createPariclePrefab, transform.position, Quaternion.identity);
-                Destroy(createParicle, 0.6f);
+                GameObject createParticle = Instantiate(createPariclePrefab, transform.position, Quaternion.identity);
+                Destroy(createParticle, 0.6f);
                 monObj.layer = 0;
                 isHaveMonster = false;
                 time = 0;
                 t = 0;
             }
-            
+        }
+
+        if(isCatchMonster)
+        {
+            if (time < bazierSpeed)
+            {
+                time += Time.deltaTime;
+                t = time / bazierSpeed;
+                transform.position = MonBezierCurves();
+            }
+            else
+            {
+                GameObject createParticle = Instantiate(createPariclePrefab, transform.position, Quaternion.identity);
+                createParticle.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                Destroy(createParticle, 0.5f);
+                isCatchMonster = false;
+                time = 0;
+                t = 0;
+            }
         }
     }
 
@@ -79,6 +98,16 @@ public class MonsterBallController : MonoBehaviour
         }
         isHaveMonster = check;
         monPrefab = _monObj;
+    }
+
+    public void ChatchMonster_Init(Transform _startPos, Transform _endPos, bool check)
+    {
+        if (!isHaveMonster)
+        {
+            startPos = _startPos;
+            endPos = _endPos;
+        }
+        isCatchMonster = check;
     }
 
 

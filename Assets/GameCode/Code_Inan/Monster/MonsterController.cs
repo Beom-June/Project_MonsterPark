@@ -23,7 +23,7 @@ namespace Monster
 //-------------IDLE Movement
         [Header("IDLE Movement")]
         private readonly int hashWalk = Animator.StringToHash("IsWalk");
-        private readonly int hashEscape = Animator.StringToHash("IsEscape"); // 센서에 발각시 한번만 놀라서 실행할 거임.
+        //private readonly int hashEscape = Animator.StringToHash("IsEscape"); // 센서에 발각시 한번만 놀라서 실행할 거임.
         [SerializeField] float movementSpeed = 3f;  // 몬스터의 이동 속도
         [SerializeField] private float idleMoveTime = 10.0f;
 
