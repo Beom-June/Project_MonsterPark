@@ -5,6 +5,7 @@ using UnityEngine;
 using EnumTypes;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
+using Monster;
 
 
 public class Customer : MonoBehaviour
@@ -17,7 +18,6 @@ public class Customer : MonoBehaviour
     PlayerManager pm;
     public CustomerStateType customerState = CustomerStateType.Entry;
     public CustomerStateType beforeCustomerState = CustomerStateType.Disable;
-
     
     private Transform _movePoint;                       //  �����ϴ� ��ġ�� 
     [SerializeField] private Transform _fence;                       //  �����ϴ� ��ġ�� 
@@ -30,6 +30,11 @@ public class Customer : MonoBehaviour
     private Quaternion _targetRotation;                                 //  ��ǥ ȸ����
     private Animator _animBuyer;
 
+    // 이난님 부분
+    private int monCount;
+    [SerializeField] private FenceController fenceCtr;
+    GameManager gmr;
+    [SerializeField] private MonsterKind monKind;
 
     private void Start()
     {
@@ -37,7 +42,9 @@ public class Customer : MonoBehaviour
 
         npcBezierCurve = GetComponent<Money>();
         pm = PlayerManager.instance;
+        gmr = GameManager.instance;
     }
+
 
     void Update()
     {
@@ -49,7 +56,7 @@ public class Customer : MonoBehaviour
                 break;
             case CustomerStateType.Watching:
                 _animBuyer.SetBool(AnimType.isThink.ToString(), true);
-                StartCoroutine(WaitAndTransition(Random.Range(3, 5), CustomerStateType.Standby));
+                CheckInCageMonster();
                 break;
             case CustomerStateType.Standby:
             
@@ -71,10 +78,41 @@ public class Customer : MonoBehaviour
                 break;
         }
         
-
-      
     }
 
+
+    private void CheckInCageMonster()
+    {
+        fenceCtr = gmr.GetFencCtr((int)monKind);
+        if(fenceCtr == null)
+        {
+            Debug.Log("팬스 컨트롤러 없음");
+            return;
+        }
+        monCount = fenceCtr.GetMonCount();
+        Debug.Log($"몬스터 개수 : {monCount}");
+       
+        if(monCount > 0)
+        {
+            customerState = CustomerStateType.Standby;
+            fenceCtr.SubMonCount();
+            GameObject monObj = fenceCtr.GetMonObj();
+            MonsterControllerMaster monCtr = monObj.GetComponent<MonsterControllerMaster>();
+            monCtr.SetMonsterIsGrabbed(true);
+            NavMeshAgent monNav = monObj.GetComponent<NavMeshAgent>();
+            monNav.enabled = false;
+            
+            monObj.transform.parent = this.transform; // 여기 
+            monObj.transform.localPosition = -transform.right * 3f; // Vector3(3f, 0f, 0f); // 여기
+           
+        }
+        else
+        {
+            Debug.Log("몬스터가 없어서 다시 웨잇");
+            customerState = CustomerStateType.Watching;
+        }
+
+    }
     private void Move()
     {
         transform.position = Vector3.MoveTowards(transform.position, _movePoint.position, _moveSpeed * Time.deltaTime);
