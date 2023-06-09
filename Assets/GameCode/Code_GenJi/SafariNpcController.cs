@@ -36,10 +36,12 @@ public class SafariNpcController : MonoBehaviour
     [SerializeField] private float _waitTimer;                                                   //  대기 타이머
 
     // 줄서기 관련
+    [SerializeField] public GameObject _moneyPrefab;
     [SerializeField] private bool _reachedFirstChild;                           //  0번째 인덱스의 자식 오브젝트에 도달했는지 여부를 나타내는 변수
     LineArea _lineArea;
     private Transform _destination;                                             //  목적지를 저장하는 변수
-    [SerializeField] public GameObject _moneyPrefab;
+    private bool _isStarted = false; // 시작 여부를 나타내는 변수
+
 
     #region Property
     public bool _isNpcWaitingTime
@@ -68,12 +70,20 @@ public class SafariNpcController : MonoBehaviour
 
         // StartCoroutine(WaitAtFirstWaypoint(_waitTime));
         // _currentWaypointIndex를 0으로 초기화 (순서대로 안가는 현상이 일어남 지금)
-        _currentWaypointIndex = 0; 
+        _currentWaypointIndex = 0;
     }
 
     void Update()
     {
+        if (!_isStarted && Input.GetKeyDown(KeyCode.Space))
+        {
+            _isStarted = true; // 스페이스바를 누르면 시작
+        }
+
+        if (_isStarted)
+        {
             SafariNpcWaypoint();
+        }
     }
 
     private void SafariNpcWaypoint()
