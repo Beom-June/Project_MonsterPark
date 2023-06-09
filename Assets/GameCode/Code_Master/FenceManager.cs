@@ -31,7 +31,7 @@ public class FenceManager : MonoBehaviour
     [Header("Open")]
     [SerializeField] private GameObject openObject; // 열렸을 때 펜스
     [SerializeField] private Animator anim; // 애니메이션
-
+    public Transform camTransform; // 열렸을 때 카메라 위치
 
     [Header("Expand")]
     [SerializeField] bool isExpandWall = false; // 가로

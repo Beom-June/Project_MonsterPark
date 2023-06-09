@@ -15,8 +15,8 @@ namespace Player
         [SerializeField] private Transform monBallPos;
         [SerializeField] private GameObject monBallPrefab;
 
-        private int itemCnt;
-        private int maxItemCnt;
+        public int itemCnt;
+        public int maxItemCnt;
         
         private float time;
         private bool isCageOut = false;
@@ -116,8 +116,9 @@ namespace Player
             {
                 GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
                 Transform targetTr = _fenceCtr.GetRandDest();
+                //_fenceCtr.AddMonCount();
                 MonsterballControllerMaster monBallCtr = monBallObj.GetComponent<MonsterballControllerMaster>();
-                monBallCtr.MonsterBall_Init(monBallPos, targetTr, true, monsObj[monIdx]);
+                monBallCtr.MonsterBall_Init(monBallPos, targetTr, true, monsObj[monIdx], 5.0f, _fenceCtr);
               
                 itemCnt--;
                 monsCount[monIdx]--;
@@ -127,11 +128,6 @@ namespace Player
                 Destroy(monBallObj);
             }
         }
-
-
-
-
-
 
         public int GetMonsCount(MonsterKind monKind)
         {

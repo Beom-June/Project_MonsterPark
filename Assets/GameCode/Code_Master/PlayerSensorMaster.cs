@@ -9,29 +9,36 @@ namespace Player
     public class PlayerSensorMaster : MonoBehaviour
     {
         static public PlayerSensorMaster instance = null;
-
+        [SerializeField] private GameObject monBallPrefab;
+        [SerializeField] private Transform monBallPos;
+        [SerializeField] private Transform backPos;
         [SerializeField] private int level = 1;
         [SerializeField] private int money = 10000;
 
         [SerializeField] float detectionAngle = 45f;  // ???? ????
         [SerializeField] float detectionRange = 5f;   // ???? ????
         [SerializeField] LayerMask targetLayer;       // ?????? ?????
-        //[SerializeField] float alphaColor = 0.3f;
+        [SerializeField] float alphaColor = 0.3f;
         [SerializeField] Color color;
 
         private Animator anim;
         private float time;
 
-        private MonsterControllerMaster monCtr;
+        private MonsterControllerMaster monCtr; //
         private Collider currentTarget;
         private bool detected = false;
-
+        private bool isMaxItem = false;
         private LineRenderer lr;
 
-        private PlayerControllerMaster playerCtr;
-        private GameManager gm;
+        private PlayerControllerMaster playerCtr; //
+        private GameManager gm; //
         private Transform monsterballTr;
-       
+
+        private float bazierTime = 0.0f;
+        private float t = 0.0f;
+
+        [SerializeField] private float bazierSpeed = 2.0f;
+
 
         private void Awake()
         {
@@ -50,9 +57,9 @@ namespace Player
 
         private void Start()
         {
-            gm = GameManager.instance;
-            gm.levelUp += SetLevel;
-            
+            gm = GameManager.instance; //
+            gm.levelUp += SetLevel; // 
+
             lr.startColor = new Color(1, 0, 0, 1f);
             lr.endColor = new Color(1, 0, 0, 1f);
             lr.startWidth = 0.2f;
@@ -61,109 +68,127 @@ namespace Player
 
         private void Update()
         {
-       
-            Collider[] targets = Physics.OverlapSphere(transform.position, detectionRange, targetLayer);
-            bool isTargetDetected = targets.Length > 0;
-
-            if (monCtr != null)
-            {
-                if (monCtr.GetMonsterIsGrabbed())
-                {
-                    //GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
-                    anim.SetLayerWeight(1, time);
-
-                    MonsterBallMarkerDeactive();
-                    monCtr = null;
-                    detected = false;
-                }
-            }
-
-            if (!isTargetDetected)
+            if (isMaxItem)
             {
                 if (time >= 0)
                 {
-                    time -= Time.deltaTime * 2.0f;
+                    time -= Time.deltaTime;
                 }
                 anim.SetLayerWeight(1, time);
+            }
+
+            if (!isMaxItem)
+            {
+                Collider[] targets = Physics.OverlapSphere(transform.position, detectionRange, targetLayer);
+                bool isTargetDetected = targets.Length > 0;
 
                 if (monCtr != null)
                 {
-                    monCtr.CheckLevelLock(level);
-                    if (!monCtr.GetLevelLock())
+                    if (monCtr.GetMonsterIsGrabbed())
                     {
                         MonsterBallMarkerDeactive();
-                        monCtr.SetIsPlayerChase(false);
-                    }
-                    monCtr.SetLevelLock();
-                    monCtr = null;
-                    detected = false;
-                }
-            }
-            else
-            {
-                float closestDistance = Mathf.Infinity;
-                foreach (Collider target in targets)
-                {
-                    Vector3 directionToTarget = target.transform.position - transform.position;
-                    float angle = Vector3.Angle(transform.forward, directionToTarget); 
+                        monCtr.SetMonsterIsGrabbed(false);
+                        monCtr = null;
+                        detected = false;
 
-                    if (angle <= detectionAngle * 0.5f)
-                    {
-        
-                        float distanceToTarget = directionToTarget.magnitude;
-
-                        if (time <= 1)
-                        {
-                            time += Time.deltaTime * 3f;
-                        }
+                        GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
+                        MonsterBallController monBallCtr = monBallObj.GetComponent<MonsterBallController>();
+                        monBallCtr.ChatchMonster_Init(monBallPos, backPos, true, 3.0f);
                         anim.SetLayerWeight(1, time);
-
-                        if (distanceToTarget < closestDistance && !detected)
-                        {
-                            monCtr = target.GetComponent<MonsterControllerMaster>();
-                            currentTarget = target;
-                            closestDistance = distanceToTarget;
-                        }
                     }
-                    else
+                }
+
+                if (!isTargetDetected)
+                {
+                    if (time >= 0)
                     {
-                        if (monCtr != null)
+                        time -= Time.deltaTime * 2.0f;
+                    }
+                    anim.SetLayerWeight(1, time);
+
+                    if (monCtr != null)
+                    {
+                        monCtr.CheckLevelLock(level);
+                        if (!monCtr.GetLevelLock())
                         {
-                            if (currentTarget == target)
+                            MonsterBallMarkerDeactive();
+                            monCtr.SetIsPlayerChase(false);
+                        }
+                        monCtr.SetLevelLock();
+                        monCtr = null;
+                        detected = false;
+                    }
+                }
+                else
+                {
+                    float closestDistance = Mathf.Infinity;
+                    foreach (Collider target in targets)
+                    {
+                        Vector3 directionToTarget = target.transform.position - transform.position;
+                        float angle = Vector3.Angle(transform.forward, directionToTarget);
+
+                        if (angle <= detectionAngle * 0.5f)
+                        {
+
+                            float distanceToTarget = directionToTarget.magnitude;
+
+                            if (time <= 1)
                             {
-                                if (time >= 0)
-                                {
-                                    time -= Time.deltaTime;
-                                }
-                                anim.SetLayerWeight(1, time);
+                                time += Time.deltaTime * 3f;
+                            }
+                            anim.SetLayerWeight(1, time);
 
-                                MonsterBallMarkerDeactive();
-                                monCtr.SetIsPlayerChase(false);
-                                detected = false;
-
-                                monCtr.SetLevelLock();
-                                monCtr = null;
-                                
+                            if (distanceToTarget < closestDistance && !detected)
+                            {
+                                monCtr = target.GetComponent<MonsterControllerMaster>();
+                                currentTarget = target;
+                                closestDistance = distanceToTarget;
                             }
                         }
+                        else
+                        {
+                            if (monCtr != null)
+                            {
+                                if (currentTarget == target)
+                                {
+                                    if (time >= 0)
+                                    {
+                                        time -= Time.deltaTime;
+                                    }
+                                    anim.SetLayerWeight(1, time);
+
+                                    MonsterBallMarkerDeactive();
+                                    monCtr.SetIsPlayerChase(false);
+                                    detected = false;
+
+                                    monCtr.SetLevelLock();
+                                    monCtr = null;
+
+                                }
+                            }
+
+                        }
 
                     }
-       
-                }
-        
 
-                if (monCtr != null)
-                {
-                    monCtr.CheckLevelLock(level);
-                    if (!monCtr.GetLevelLock())
+
+                    if (monCtr != null)
                     {
-                        monCtr.SetIsPlayerChase(true);
-                        MonsterBallMarkerShoot();
-                        detected = true;
+                        monCtr.CheckLevelLock(level);
+                        if (!monCtr.GetLevelLock())
+                        {
+                            monCtr.SetIsPlayerChase(true);
+                            MonsterBallMarkerShoot();
+                            Debug.Log("추격 시작");
+                            detected = true;
+                        }
+
                     }
-            
                 }
             }
+            
+       
+           
 
         }
 
@@ -171,10 +196,18 @@ namespace Player
         {
             monsterballTr = playerCtr.GetMonsterBallPos();
 
-            lr.positionCount = 2;
-            lr.SetPosition(0, monsterballTr.position);
+            if(monCtr != null)
+            {
+                lr.positionCount = 2;
+                lr.SetPosition(0, monsterballTr.position);
 
-            lr.SetPosition(1, monCtr.transform.position);
+                lr.SetPosition(1, monCtr.transform.position);
+            }
+            else
+            {
+                MonsterBallMarkerDeactive();
+            }
+            
         }
 
 
@@ -193,6 +226,19 @@ namespace Player
                 DrawFanShape();
             }
         }
+
+        //IEnumerator MoveBallToBack()
+        //{
+        //    GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
+        //    MonsterBallController monBallCtr = monBallObj.GetComponent<MonsterBallController>();
+        //    monBallCtr.ChatchMonster_Init(monBallPos, backPos, true);
+        //    anim.SetLayerWeight(1, time);
+
+        //    MonsterBallMarkerDeactive();
+        //    monCtr = null;
+        //    detected = false;
+        //    yield return 
+        //}
 
         private void DrawFanShape()
         {
@@ -248,14 +294,24 @@ namespace Player
             Gizmos.DrawWireSphere(transform.position, detectionRange);
         }
 
+        public int GetPlayerLevel()
+        {   
+            return level; 
+        }
+
+        public int GetPlayerMoney()
+        {   
+            return money; 
+        }
+
         private void SetLevel(int _level)
         {
             level = _level;
         }
 
-         public int GetPlayerMoney()
-        {   
-            return money; 
+        public void SetIsMaxItem(bool _isMaxItem)
+        {
+            isMaxItem = _isMaxItem;
         }
     }
 

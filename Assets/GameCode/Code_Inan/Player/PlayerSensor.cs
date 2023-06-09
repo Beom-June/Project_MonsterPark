@@ -25,12 +25,15 @@ namespace Player
         private float time;
 
         private MonsterController monCtr;
+        //private MonsterControllerMaster monCtr; //
         private Collider currentTarget;
         private bool detected = false;
         private bool isMaxItem = false;
         private LineRenderer lr;
 
         private PlayerController_Inan playerCtr;
+        //private PlayerControllerMaster playerCtr; //
+        //private GameManager gm; //
         private Transform monsterballTr;
 
         private float bazierTime = 0.0f;
@@ -56,6 +59,9 @@ namespace Player
 
         private void Start()
         {
+            //gm = GameManager.instance; //
+            //gm.levelUp += SetLevel; // 
+
             lr.startColor = new Color(1, 0, 0, 1f);
             lr.endColor = new Color(1, 0, 0, 1f);
             lr.startWidth = 0.2f;
@@ -300,6 +306,11 @@ namespace Player
         {   
             return money; 
         }
+
+        // private void SetLevel(int _level)
+        // {
+        //     level = _level;
+        // }
 
         public void SetIsMaxItem(bool _isMaxItem)
         {

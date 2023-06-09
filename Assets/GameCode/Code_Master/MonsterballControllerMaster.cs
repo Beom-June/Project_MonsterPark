@@ -11,12 +11,17 @@ public class MonsterballControllerMaster : MonoBehaviour
     private float time = 0.0f;
     private float t = 0.0f;
 
-    private bool isCreateMon = false;
+   
     [SerializeField] private float bazierSpeed = 2.0f;
-    
+    private float bezierHeight;
+    private bool isCreateMon = false;
+
     private GameObject monPrefab;
     Transform startPos;
     Transform endPos;
+
+    private GameObject monObj; //팬스에 넘겨줄 몬스터 오브젝트
+    private FenceController fenceCtr;
 
     void Start()
     {
@@ -41,13 +46,16 @@ public class MonsterballControllerMaster : MonoBehaviour
             }
             else
             {
-                GameObject monObj = Instantiate(monPrefab, transform.position, Quaternion.identity);
+                monObj = Instantiate(monPrefab, transform.position, Quaternion.identity);
                 GameObject createParticle = Instantiate(createPariclePrefab, transform.position, Quaternion.identity);
                 Destroy(createParticle, 0.6f);
                 monObj.layer = 0;
                 isHaveMonster = false;
                 time = 0;
                 t = 0;
+                fenceCtr.AddMonCount(monObj);
+                Debug.Log($"몬스터 볼에서 호출{fenceCtr.GetMonCount()}");
+                
             }
         }
 
@@ -67,6 +75,7 @@ public class MonsterballControllerMaster : MonoBehaviour
                 isCatchMonster = false;
                 time = 0;
                 t = 0;
+                Destroy(this.gameObject);
             }
         }
     }
@@ -75,8 +84,8 @@ public class MonsterballControllerMaster : MonoBehaviour
     public Vector3 MonBezierCurves()
     {
         Vector3 P1 = startPos.position;
-        Vector3 P2 = startPos.position + (Vector3.up * 5f);
-        Vector3 P3 = endPos.position + (Vector3.up * 5f);
+        Vector3 P2 = startPos.position + (Vector3.up * bezierHeight);
+        Vector3 P3 = endPos.position + (Vector3.up * bezierHeight);
         Vector3 P4 = endPos.position;
 
         Vector3 A = Vector3.Lerp(P1, P2, t);
@@ -89,7 +98,7 @@ public class MonsterballControllerMaster : MonoBehaviour
         return F;
     }
 
-    public void MonsterBall_Init(Transform _startPos, Transform _endPos, bool check, GameObject _monObj)
+    public void MonsterBall_Init(Transform _startPos, Transform _endPos, bool check, GameObject _monObj, float height, FenceController _fenceCtr)
     {
         if(!isHaveMonster)
         {
@@ -98,9 +107,11 @@ public class MonsterballControllerMaster : MonoBehaviour
         }
         isHaveMonster = check;
         monPrefab = _monObj;
+        bezierHeight = height;
+        fenceCtr = _fenceCtr;
     }
 
-    public void ChatchMonster_Init(Transform _startPos, Transform _endPos, bool check)
+    public void ChatchMonster_Init(Transform _startPos, Transform _endPos, bool check, float height)
     {
         if (!isHaveMonster)
         {
@@ -108,6 +119,12 @@ public class MonsterballControllerMaster : MonoBehaviour
             endPos = _endPos;
         }
         isCatchMonster = check;
+        bezierHeight = height;
+    }
+
+    public GameObject GetMonObj()
+    {
+        return monObj;
     }
 
 

@@ -1027,12 +1027,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2add1950f3cf7e44e934d2d2447c8604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monBallPrefab: {fileID: 8009189206866819860, guid: b2e494858e82c4f3f9d283f3d7d7618b, type: 3}
+  monBallPos: {fileID: 7892112094709183245}
+  backPos: {fileID: 6982514673522438358}
+  level: 5
+  money: 10000
   detectionAngle: 107.75
   detectionRange: 4.1
   targetLayer:
     serializedVersion: 2
     m_Bits: 64
   color: {r: 0, g: 0.61797667, b: 1, a: 0.5176471}
+  bazierSpeed: 2
 --- !u!114 &297939385
 MonoBehaviour:
   m_ObjectHideFlags: 0

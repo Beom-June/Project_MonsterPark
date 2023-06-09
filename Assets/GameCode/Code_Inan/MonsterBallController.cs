@@ -20,6 +20,9 @@ public class MonsterBallController : MonoBehaviour
     Transform startPos;
     Transform endPos;
 
+    private GameObject monObj; //팬스에 넘겨줄 몬스터 오브젝트
+    private FenceController fenceCtr;
+
     void Start()
     {
         
@@ -43,13 +46,16 @@ public class MonsterBallController : MonoBehaviour
             }
             else
             {
-                GameObject monObj = Instantiate(monPrefab, transform.position, Quaternion.identity);
+                monObj = Instantiate(monPrefab, transform.position, Quaternion.identity);
                 GameObject createParticle = Instantiate(createPariclePrefab, transform.position, Quaternion.identity);
                 Destroy(createParticle, 0.6f);
                 monObj.layer = 0;
                 isHaveMonster = false;
                 time = 0;
                 t = 0;
+                fenceCtr.AddMonCount(monObj);
+                Debug.Log($"몬스터 볼에서 호출{fenceCtr.GetMonCount()}");
+                
             }
         }
 
@@ -92,7 +98,7 @@ public class MonsterBallController : MonoBehaviour
         return F;
     }
 
-    public void MonsterBall_Init(Transform _startPos, Transform _endPos, bool check, GameObject _monObj, float height)
+    public void MonsterBall_Init(Transform _startPos, Transform _endPos, bool check, GameObject _monObj, float height, FenceController _fenceCtr)
     {
         if(!isHaveMonster)
         {
@@ -102,6 +108,7 @@ public class MonsterBallController : MonoBehaviour
         isHaveMonster = check;
         monPrefab = _monObj;
         bezierHeight = height;
+        fenceCtr = _fenceCtr;
     }
 
     public void ChatchMonster_Init(Transform _startPos, Transform _endPos, bool check, float height)
@@ -113,6 +120,11 @@ public class MonsterBallController : MonoBehaviour
         }
         isCatchMonster = check;
         bezierHeight = height;
+    }
+
+    public GameObject GetMonObj()
+    {
+        return monObj;
     }
 
 

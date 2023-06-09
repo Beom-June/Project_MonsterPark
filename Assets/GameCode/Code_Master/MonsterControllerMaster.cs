@@ -7,11 +7,11 @@ using Player;
 using UnityEngine.AI;
 namespace Monster
 {
-    // 마스터씬용
     public class MonsterControllerMaster : MonoBehaviour
     {
         PlayerInvenMaster playerInven;
         PlayerControllerMaster playerCtr; // 코드 충돌 조심
+    
         [SerializeField] private Image hpBarImg; // 체력 바
         [SerializeField] private GameObject hpObj; //비활성화 시킬 체력 Obj
         [SerializeField] private MonsterState monsterState = MonsterState.IDLE;
@@ -24,7 +24,7 @@ namespace Monster
 //-------------IDLE Movement
         [Header("IDLE Movement")]
         private readonly int hashWalk = Animator.StringToHash("IsWalk");
-        private readonly int hashEscape = Animator.StringToHash("IsEscape"); // 센서에 발각시 한번만 놀라서 실행할 거임.
+        //private readonly int hashEscape = Animator.StringToHash("IsEscape"); // 센서에 발각시 한번만 놀라서 실행할 거임.
         [SerializeField] float movementSpeed = 3f;  // 몬스터의 이동 속도
         [SerializeField] private float idleMoveTime = 10.0f;
 
@@ -46,8 +46,6 @@ namespace Monster
         private int monLevel;
         private int playerLevel;
         
-
-
 //-------------------Grabbed Monster
         [Header("Grabbed Monster")]
         [SerializeField] private float scaleDownTime = 0.5f; // 줄어드는 속도
@@ -132,11 +130,16 @@ namespace Monster
                 {
                     currentTime += Time.deltaTime;
                     t = currentTime / scaleDownTime;
-                    transform.localScale = Vector3.Lerp(currentScale, Vector3.zero, t); 
-                    
+                    transform.localScale = Vector3.Lerp(currentScale, Vector3.zero, t);
+                    transform.Rotate(Vector3.up * Time.deltaTime * rotSeepd);
+                    transform.position = Vector3.Lerp(currentPosition, playerCtr.GetMonsterBallPos().position, t);
                 }
-                transform.Rotate(Vector3.up * Time.deltaTime * rotSeepd);
-                transform.position = Vector3.Lerp(currentPosition, playerCtr.GetMonsterBallPos().position, t);
+                else
+                {
+                    this.gameObject.layer = 0;
+                }
+
+                
             }
         }
 
@@ -171,7 +174,7 @@ namespace Monster
                 {
                     case MonsterState.IDLE:
                         agent.isStopped = true;
-                        // anim.SetBool(hashWalk, false);
+                        anim.SetBool(hashWalk, false);
 
                         closestRenderer.material.color = closestOriginalColor;
                         hpObj.SetActive(false);
@@ -182,7 +185,7 @@ namespace Monster
 
                         agent.isStopped = false;
                         agent.speed = 3f;
-                        // anim.SetBool(hashWalk, true);
+                        anim.SetBool(hashWalk, true);
 
                         agent.SetDestination(targetPosition);
                         if (agent.velocity == Vector3.zero)
@@ -285,6 +288,11 @@ namespace Monster
         public bool GetMonsterIsGrabbed()
         {
             return isGrabbed;
+        }
+
+        public void SetMonsterIsGrabbed(bool _set)
+        {
+            isGrabbed = _set;
         }
 
         public void SetMonImage()

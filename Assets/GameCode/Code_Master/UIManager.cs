@@ -23,6 +23,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text monsBallCntText;
     [SerializeField] private GameObject maxUI;
 
+    [SerializeField] private GameObject plusMonsterUI;  // 여기 추가
+    [SerializeField] private Image plusMonsterImg;  // 여기 추가
     // yuki 추가
 
     PlayerManager pm;
@@ -89,6 +91,8 @@ public class UIManager : MonoBehaviour
             monsText[monidx] = monsObj[monidx].GetComponentInChildren<Text>();
             monImg.sprite = monsTexture[monidx];
             monsObj[monidx].transform.parent = panelObj.transform;
+
+            plusMonsterImg.sprite = monsTexture[monidx];
         }
         else
         {
@@ -97,17 +101,29 @@ public class UIManager : MonoBehaviour
 
         if(curItemCnt / maxItemCnt == 1)
         {
-            playerSensorCtr.enabled = false;
+            playerSensorCtr.SetIsMaxItem(true);
             monsBallCntText.text = $"Max!";
             maxUI.SetActive(true);
         }
         else
         {
-            playerSensorCtr.enabled = true;
+            StartCoroutine(FloatingPlusMonsterUI()); // 여기 추가
+            playerSensorCtr.SetIsMaxItem(false);
             monsBallCntText.text = $"{curItemCnt}/{maxItemCnt}";
             maxUI.SetActive(false);
         }
-       
+    }
 
+    public void SetMosterballUI(int curItemCnt, int maxItemCnt)
+    {
+        Debug.Log($"{curItemCnt} {maxItemCnt}");
+        monsBallCntText.text = $"{curItemCnt}/{maxItemCnt}";
+    }
+
+    IEnumerator FloatingPlusMonsterUI()
+    {
+        plusMonsterUI.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        plusMonsterUI.SetActive(false);
     }
 }

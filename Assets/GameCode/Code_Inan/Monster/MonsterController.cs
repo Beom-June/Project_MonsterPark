@@ -9,6 +9,8 @@ namespace Monster
 {
     public class MonsterController : MonoBehaviour
     {
+        //PlayerInvenMaster playerInven;
+        //PlayerControllerMaster playerCtr; // 코드 충돌 조심
         PlayerInven playerInven;
         PlayerController_Inan playerCtr; // 코드 충돌 조심
         [SerializeField] private Image hpBarImg; // 체력 바

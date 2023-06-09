@@ -116,8 +116,9 @@ namespace Player
             {
                 GameObject monBallObj = Instantiate(monBallPrefab, monBallPos.position, Quaternion.identity);
                 Transform targetTr = _fenceCtr.GetRandDest();
+                //_fenceCtr.AddMonCount();
                 MonsterBallController monBallCtr = monBallObj.GetComponent<MonsterBallController>();
-                monBallCtr.MonsterBall_Init(monBallPos, targetTr, true, monsObj[monIdx], 5.0f);
+                monBallCtr.MonsterBall_Init(monBallPos, targetTr, true, monsObj[monIdx], 5.0f, _fenceCtr);
               
                 itemCnt--;
                 monsCount[monIdx]--;
@@ -127,11 +128,6 @@ namespace Player
                 Destroy(monBallObj);
             }
         }
-
-
-
-
-
 
         public int GetMonsCount(MonsterKind monKind)
         {

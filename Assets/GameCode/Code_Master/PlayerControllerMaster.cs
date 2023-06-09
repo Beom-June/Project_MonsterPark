@@ -8,7 +8,7 @@ namespace Player
     public class PlayerControllerMaster : MonoBehaviour
     {
         [Header("Player Settings")]
-        [SerializeField] private float _moveSpeed = 5f;                //   이동 속도
+        public float _moveSpeed = 5f;                //   이동 속도
         [SerializeField] private float _rotationSpeed = 5f;            //   이동 속도
         private float _horizontalAxis;                                  //  수평 입력 값
         private float _verticalAxis;                                    //  수직 입력 값

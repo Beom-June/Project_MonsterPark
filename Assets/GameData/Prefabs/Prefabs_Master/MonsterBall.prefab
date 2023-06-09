@@ -131,7 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isHaveMonster: 0
   isCatchMonster: 0
-  createPariclePrefab: {fileID: 1247311384876784, guid: accde915167414aebba10d98c9e23e31, type: 3}
+  createPariclePrefab: {fileID: 100004, guid: 757df604761b8ef42831192c70ee1099, type: 3}
   bazierSpeed: 0.75
 --- !u!1 &7615323887071249040
 GameObject:

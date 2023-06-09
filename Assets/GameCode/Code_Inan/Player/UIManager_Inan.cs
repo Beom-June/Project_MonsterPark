@@ -103,7 +103,5 @@ public class UIManager_Inan : MonoBehaviour
             monsBallCntText.text = $"{curItemCnt}/{maxItemCnt}";
             maxUI.SetActive(false);
         }
-       
-
     }
 }
