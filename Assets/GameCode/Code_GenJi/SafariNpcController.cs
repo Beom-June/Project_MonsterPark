@@ -39,6 +39,7 @@ public class SafariNpcController : MonoBehaviour
     [SerializeField] private bool _reachedFirstChild;                           //  0번째 인덱스의 자식 오브젝트에 도달했는지 여부를 나타내는 변수
     LineArea _lineArea;
     private Transform _destination;                                             //  목적지를 저장하는 변수
+    [SerializeField] public GameObject _moneyPrefab;
 
     #region Property
     public bool _isNpcWaitingTime
@@ -54,7 +55,7 @@ public class SafariNpcController : MonoBehaviour
 
     public float _WaitTimer
     {
-        set { _waitTimer = value;               }
+        set { _waitTimer = value; }
     }
     #endregion
 
@@ -66,12 +67,13 @@ public class SafariNpcController : MonoBehaviour
 
 
         // StartCoroutine(WaitAtFirstWaypoint(_waitTime));
-
+        // _currentWaypointIndex를 0으로 초기화 (순서대로 안가는 현상이 일어남 지금)
+        _currentWaypointIndex = 0; 
     }
 
     void Update()
     {
-        SafariNpcWaypoint();
+            SafariNpcWaypoint();
     }
 
     private void SafariNpcWaypoint()
@@ -90,32 +92,34 @@ public class SafariNpcController : MonoBehaviour
             _waitTimer -= Time.deltaTime;
             if (_waitTimer <= 0f)
             {
-                _currentWaypointIndex++;
+                // _currentWaypointIndex++;
                 _isWaiting = false;
                 _animatorSafariNpc.SetFloat("isWalk", 1f);
             }
             return;
         }
 
-        if (_currentWaypointIndex == 0 && !_reachedFirstChild)
-        {
-            Transform firstChild = GetFirstChildWithNoChildren(_wayPoints[_currentWaypointIndex]);
-            if (firstChild != null)
-            {
-                _destination = firstChild;
-                if (transform.position == _destination.position)
-                {
-                    _reachedFirstChild = true;
-                    _isWaiting = true;
-                }
-            }
-        }
-        else
-        {
-            // 1번째 인덱스부터 순서대로 이동
-            _destination = _wayPoints[_currentWaypointIndex];
-        }
+        // if (_currentWaypointIndex == 0 && !_reachedFirstChild)
+        // {
+        //     Transform firstChild = GetFirstChildWithNoChildren(_wayPoints[_currentWaypointIndex]);
+        //     if (firstChild != null)
+        //     {
+        //         _destination = firstChild;
+        //         if (transform.position == _destination.position)
+        //         {
+        //             _reachedFirstChild = true;
+        //             _isWaiting = true;
+        //         }
+        //     }
+        // }
+        // else
+        // {
+        //     // 1번째 인덱스부터 순서대로 이동
+        //     _destination = _wayPoints[_currentWaypointIndex];
+        // }
 
+        // 수정함 (영상용 코드)
+        _destination = _wayPoints[_currentWaypointIndex];
 
         Vector3 newPos = Vector3.MoveTowards(transform.position, _destination.position, _speed * Time.deltaTime);
         transform.position = newPos;
@@ -129,38 +133,52 @@ public class SafariNpcController : MonoBehaviour
             Quaternion lookRotation = Quaternion.LookRotation(lookDirection);
             transform.rotation = lookRotation;
         }
-
+        // 수정함 (영상용 코드)
         float distance = Vector3.Distance(transform.position, _destination.position);
         if (distance <= 0.05f)
         {
-            if (_currentWaypointIndex == 0)
-            {
-                Debug.Log("여기서 받아옴");
-                _isWaiting = true;
-                _waitTimer = _waitTime;
-            }
-            else if (_currentWaypointIndex < _wayPoints.Count - 1)
-            {
-                if (_visitedCount < 4)
-                {
-                    // 다음 포인트 가면 여기로 들어옴 지금
-                    Debug.Log("꼬임 방지 디버그====>");
-                    _isWaiting = true;
-                    _waitTimer = _waitTime;
-                    List<int> randomIndices = GetRandomIndices();
-                    _currentWaypointIndex = randomIndices[_visitedCount];
-                    _visitedCount++;
-                }
-                else
-                {
-                    Debug.Log("444444444444");
-                    _isWaiting = true;
-                    _waitTimer = _waitTime;
-                    _currentWaypointIndex = _wayPoints.Count - 1;
-                }
-            }
+            _isWaiting = true;
+            _waitTimer = _waitTime;
+            _currentWaypointIndex++;
 
+            //제스쳐 애니메이션 랜덤으로
+            // RandAnim();
         }
+        if (_currentWaypointIndex <= _wayPoints.Count)
+        {
+            _animatorSafariNpc.SetFloat("isWalk", _isWaiting ? 0f : 1f);
+        }
+
+        // float distance = Vector3.Distance(transform.position, _destination.position);
+        // if (distance <= 0.05f)
+        // {
+        //     if (_currentWaypointIndex == 0)
+        //     {
+        //         Debug.Log("여기서 받아옴");
+        //         _isWaiting = true;
+        //         _waitTimer = _waitTime;
+        //     }
+        //      if (_currentWaypointIndex < _wayPoints.Count - 1)
+        //     {
+        //         if (_visitedCount < 9)
+        //         {
+        //             // 다음 포인트 가면 여기로 들어옴 지금
+        //             Debug.Log("꼬임 방지 디버그====>");
+        //             _isWaiting = true;
+        //             _waitTimer = _waitTime;
+        //             SpawnMoney();
+        //             // List<int> randomIndices = GetRandomIndices();
+        //             // _currentWaypointIndex = randomIndices[_visitedCount];
+        //             _visitedCount++;
+        //         }
+        //         else
+        //         {
+
+        //             _currentWaypointIndex = _wayPoints.Count - 1;
+        //         }
+        //     }
+
+        // }
     }
     private Transform GetFirstChildWithNoChildren(Transform parent)
     {
@@ -187,14 +205,38 @@ public class SafariNpcController : MonoBehaviour
         return randomIndices;
     }
 
-    public bool IsMoving()
+    void SpawnMoney()
     {
-        return _animatorSafariNpc.GetFloat("isWalk") > 0f;
+        float randomValue = UnityEngine.Random.value;
+
+        if (randomValue <= 0.5f)
+        {
+            Instantiate(_moneyPrefab, transform.position, Quaternion.Euler(-90f, 0f, 90f));
+        }
+    }
+    void RandAnim()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, 2); // 0 또는 1 중에서 랜덤한 값을 얻습니다.
+
+        if (randomIndex == 0)
+        {
+            _animatorSafariNpc.SetTrigger("isThink"); // 첫 번째 setBool 실행
+        }
+        else
+            _animatorSafariNpc.SetTrigger("isCheering"); // 두 번째 setBool 비활성화
     }
 
     public IEnumerator WaitAtFirstWaypoint(float _time)
     {
         yield return new WaitForSeconds(_time);
         _currentWaypointIndex++;
+    }
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.CompareTag("PointInHouse"))
+        {
+            SpawnMoney();
+            RandAnim();
+        }
     }
 }

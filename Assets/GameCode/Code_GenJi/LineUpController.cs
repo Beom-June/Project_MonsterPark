@@ -67,9 +67,6 @@ public class LineUpController : MonoBehaviour
                             // 첫 번째 LineArea의 자식이 아직 있을 경우 두 번째 자식으로 보내지 않고 다시 첫 번째 LineArea로 돌려보냄
                             childNPC.position = previousLineArea.position;
                             childNPC.parent = previousLineArea;
-
-                            _safariNpc._isNpcWaitingTime = true;
-                            _safariNpc._WaitTimer = _safariNpc._WaitTime;
                             Debug.Log("@@@@");
                         }
                     }
