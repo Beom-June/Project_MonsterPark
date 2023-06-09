@@ -1115,6 +1115,7 @@ MonoBehaviour:
   moneyChatBubbleImg: {fileID: 5609586857586712414}
   openObject: {fileID: 5609586858679152147}
   anim: {fileID: 5609586857152390371}
+  camTransform: {fileID: 0}
   isExpandWall: 0
   wallH: {fileID: 0}
   wallL: {fileID: 0}
@@ -7608,7 +7609,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5609586858679152172
 Transform:
   m_ObjectHideFlags: 0

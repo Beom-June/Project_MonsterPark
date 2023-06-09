@@ -11,8 +11,9 @@ public class CustomerController_Inan : MonoBehaviour
     {
         WALK,
         WAIT,
-        PAY,
-        WAITPAY,        
+        PAY, // 펫을 데리고 이동 
+        WAITPAY, // 계산대 앞
+        OUT,
     }
     [SerializeField] private CustomerState customerState;
     [SerializeField] private MonsterKind monKind;
@@ -21,7 +22,9 @@ public class CustomerController_Inan : MonoBehaviour
     private readonly int hashThink = Animator.StringToHash("IsThink");
 
     GameManager gmr;
-    [SerializeField] private Transform payPosTr;
+    [SerializeField] private Transform payPosTr; // 줄 설 곳
+    [SerializeField] private Transform _outPoint; // 나가는 곳 
+
     [SerializeField] Transform[] fence = new Transform[4];
     [SerializeField] private FenceController fenceCtr;
 
@@ -35,6 +38,11 @@ public class CustomerController_Inan : MonoBehaviour
     private int trCount;
 
     private int monCount;
+
+
+    private Money npcBezierCurve;
+    private bool isPay = false; // 돈을 다 지불했다면 
+    PlayerManager pm;
 
     private void Awake()
     {
@@ -92,6 +100,22 @@ public class CustomerController_Inan : MonoBehaviour
                 }
             }
 
+            if (distance < 0.1f &&customerState == CustomerState.PAY)
+            {
+               customerState = CustomerState.WAITPAY;
+            }
+
+            if (customerState == CustomerState.WAITPAY)
+            {
+                if (pm.isInCounter && !isPay)
+                {
+                    npcBezierCurve.boolThrow = true;
+                    isPay = true;
+                    StartCoroutine(WaitAndTransition(1f, CustomerState.OUT));
+                }
+            }
+
+           
 
         }
     }
@@ -115,8 +139,14 @@ public class CustomerController_Inan : MonoBehaviour
                 case CustomerState.PAY:
                     anim.SetBool(hashThink, false);
                     anim.SetBool(hashWalk, true);
-                    SetPayPosition();
+                    SetDestination(payPosTr);
                     break;
+                case CustomerState.OUT:
+                    anim.SetBool(hashThink, false);
+                    anim.SetBool(hashWalk, true);
+                    SetDestination(_outPoint);
+                    break;
+
             }
         }
     }
@@ -127,9 +157,9 @@ public class CustomerController_Inan : MonoBehaviour
         agent.SetDestination(destTr.position);
     }
 
-     private void SetPayPosition()
+     private void SetDestination(Transform posTr)
     {
-        destTr = payPosTr; // Random
+        destTr = posTr; // Random
         agent.SetDestination(destTr.position);
     }
 
@@ -154,8 +184,8 @@ public class CustomerController_Inan : MonoBehaviour
             NavMeshAgent monNav = monObj.GetComponent<NavMeshAgent>();
             monNav.enabled = false;
             
-            monObj.transform.parent = this.transform.parent;
-            monObj.transform.position = -transform.parent.right;
+            monObj.transform.parent = this.transform; // 여기 
+            monObj.transform.localPosition = -transform.right; // Vector3(3f, 0f, 0f); // 여기
            
         }
         else
@@ -164,6 +194,12 @@ public class CustomerController_Inan : MonoBehaviour
             customerState = CustomerState.WAIT;
         }
 
+    }
+
+    private IEnumerator WaitAndTransition(float waitTime, CustomerState nextCustomerState)
+    {
+        yield return new WaitForSeconds(waitTime);
+        customerState = nextCustomerState;
     }
 
 }
