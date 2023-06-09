@@ -14,6 +14,7 @@ TagManager:
   - NotOpenFence
   - Undefined
   - PointInHouse
+  - Item
   layers:
   - Default
   - TransparentFX

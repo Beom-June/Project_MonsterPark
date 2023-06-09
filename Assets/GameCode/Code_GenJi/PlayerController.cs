@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class PlayerController : MonoBehaviour
 
     private MoneyBezierCurves bezierCurves;
 
+    // Money UI Event
+    [SerializeField] private Text _moneyText;
+    [SerializeField] private Transform _textRotationTransform;
+
     void Start()
     {
         _playerAnimator = GetComponent<Animator>();
@@ -33,6 +38,9 @@ public class PlayerController : MonoBehaviour
                 npcBezierCurves.Add(bezierCurves);
             }
         }
+
+        // text UI
+        _textRotationTransform = _moneyText.transform.parent;
     }
 
     void Update()
@@ -65,7 +73,20 @@ public class PlayerController : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(_moveVector);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+
+            _textRotationTransform.rotation = Quaternion.Lerp(_textRotationTransform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
+    }
+
+    IEnumerator RemoveMoneyCoroutine()
+    {
+        // moneyText.text = $"${money}";
+        _moneyText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        _moneyText.gameObject.SetActive(false);
+
+        // pm.money += money;
+        // money = 0;
     }
 
     private void OnTriggerEnter(Collider collider)
@@ -84,6 +105,11 @@ public class PlayerController : MonoBehaviour
                 npcBezierCurve.boolThrow = true;
             }
         }
+        if (collider.gameObject.CompareTag("Money"))
+        {
+            Destroy(collider.gameObject);
+            StartCoroutine(RemoveMoneyCoroutine());
+        }
     }
 
     private void OnTriggerExit(Collider collider)
@@ -98,4 +124,4 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    }
+}

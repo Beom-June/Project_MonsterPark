@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7083762769430495204}
   - component: {fileID: 7117812322451910170}
   - component: {fileID: -8581535516471777734}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: MoneySpawn
   m_TagString: Money
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8200452499440906120}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.001050815, y: 0.0020237998, z: 0.00042975825}
