@@ -107,7 +107,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(FloatingPlusMonsterUI()); // 여기 추가
+            // StartCoroutine(FloatingPlusMonsterUI()); // 여기 추가
             playerSensorCtr.SetIsMaxItem(false);
             monsBallCntText.text = $"{curItemCnt}/{maxItemCnt}";
             maxUI.SetActive(false);
@@ -120,7 +120,7 @@ public class UIManager : MonoBehaviour
         monsBallCntText.text = $"{curItemCnt}/{maxItemCnt}";
     }
 
-    IEnumerator FloatingPlusMonsterUI()
+    public IEnumerator FloatingPlusMonsterUI()
     {
         plusMonsterUI.SetActive(true);
         yield return new WaitForSeconds(0.5f);

@@ -11,10 +11,18 @@ public class CameraController : MonoBehaviour
     [SerializeField] float height;
     [SerializeField] float damping;
 
+    private bool isMove = false;
+    private Transform target;
+
     Vector3 velocity;
+
+    GameManager gm;
     void Start()
     {
         playerCtr = PlayerControllerMaster.instance;
+        gm = GameManager.instance;
+
+        gm.openFenceCamrea += CameraMoveFlag;
     }
 
     // Update is called once per frame
@@ -24,9 +32,35 @@ public class CameraController : MonoBehaviour
                       (Vector3.back * distance) +
                       (Vector3.up * height);
 
-        transform.position = Vector3.SmoothDamp(transform.position,
-            pos,
-            ref velocity,
-            damping);
+        if (!isMove)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position,
+                pos,
+                ref velocity,
+                damping);
+        }
+        else
+        {
+            StartCoroutine(MoveCamera());
+        }
+
     }
+
+    void CameraMoveFlag(Transform transform)
+    {
+        isMove = true;
+        target = transform;
+    }
+
+    IEnumerator MoveCamera()
+    {   
+         transform.position = Vector3.SmoothDamp(transform.position,
+                target.position,
+                ref velocity,
+                damping);
+
+        yield return new WaitForSeconds(1f);
+        isMove = false;
+    }
+    
 }
